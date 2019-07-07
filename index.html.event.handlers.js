@@ -226,4 +226,5 @@ photoHeight = document.getElementById('photoHeight').value;
 photoDispWidth = document.getElementById('photoDispWidth').value;
 photoDispHeight = document.getElementById('photoDispHeight').value;
 hideAllPlayers();
-generatedCategoryButtons.innerHTML = generateCategoryButtons();
+generatedCategoryButtonsForSnapShot.innerHTML = generateCategoryButtons();
+generatedCategoryButtonsForGalleryImage.innerHTML = generateCategoryButtons();
