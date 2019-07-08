@@ -2,7 +2,11 @@
 
 let pressedPlayAtLeastOnceAfterStartOfStreaming = false;
 let snapAllPhotosContinuous = false;
+let sendCurrentGalleryToMixed = false;
+let sendCurrentBackgroundsToMixed = false;
 
+let photoWidth = 0;
+let photoHeight = 0;
 let photoDispWidth = 0;
 let photoDispHeight = 0;
 
@@ -41,13 +45,13 @@ const doChangePlayerHeight = (input) => {
     }
 }
 
-const doStartStopAllCameras = () => {
+const doStartStopAllCameras = (button) => {
     try {
-        if (startStopAllCameras.innerHTML === 'Stream All') {
+        if (button.innerHTML === 'Stream All') {
             startAllCameras();
             showMessages('info','Camera Feeds Starting....');
-            startStopAllCameras.innerHTML = 'Stop All';
-            startStopAllCameras.className = 'btn btn-primary';
+            button.innerHTML = 'Stop All';
+            button.className = 'btn btn-primary';
             playPauseAllPlayers.disabled = false;
             photoCanvas1.style.display = 'inline';
             photoCanvas2.style.display = 'inline';
@@ -58,11 +62,17 @@ const doStartStopAllCameras = () => {
             galleryDispCanvas1.style.display = 'inline';
             galleryDispCanvas2.style.display = 'inline';
             galleryDispCanvas3.style.display = 'inline';
+            backgroundsDispCanvas1.style.display = 'inline';
+            backgroundsDispCanvas2.style.display = 'inline';
+            backgroundsDispCanvas3.style.display = 'inline';
+            backgroundsPlusGalleriesDispCanvas1.style.display = 'inline';
+            backgroundsPlusGalleriesDispCanvas2.style.display = 'inline';
+            backgroundsPlusGalleriesDispCanvas3.style.display = 'inline';
         } else {
             stopAllCameras();
             showMessages('info','Camera Feeds Stopping....');
-            startStopAllCameras.innerHTML = 'Stream All';
-            startStopAllCameras.className = 'btn btn-default';
+            button.innerHTML = 'Stream All';
+            button.className = 'btn btn-default';
             pauseAllPlayers();
             playPauseAllPlayers.disabled = true;
             hideAllPlayers();
@@ -84,6 +94,8 @@ const doStopCamera = (button) => {
                 photoCanvas1.style.display = 'none';
                 photoDispCanvas1.style.display = 'none';
                 galleryDispCanvas1.style.display = 'none';
+                backgroundsDispCanvas1.style.display = 'none';
+                backgroundsPlusGalleriesDispCanvas1.style.display = 'none';
                 cleanUp(player1);
                 break;
         case 'stopPlayer2':
@@ -92,6 +104,8 @@ const doStopCamera = (button) => {
                 photoCanvas2.style.display = 'none';
                 photoDispCanvas2.style.display = 'none';
                 galleryDispCanvas2.style.display = 'none';
+                backgroundsDispCanvas2.style.display = 'none';
+                backgroundsPlusGalleriesDispCanvas2.style.display = 'none';
                 cleanUp(player2);
                 break;
         case 'stopPlayer3':
@@ -100,13 +114,15 @@ const doStopCamera = (button) => {
                 photoCanvas3.style.display = 'none';
                 photoDispCanvas3.style.display = 'none';
                 galleryDispCanvas3.style.display = 'none';
+                backgroundsDispCanvas3.style.display = 'none';
+                backgroundsPlusGalleriesDispCanvas3.style.display = 'none';
                 cleanUp(player3);
                 break;
     }
 }
 
 const showAllPlayers = () => {
-        showHideAllPlayers.innerHTML = 'Hide All';
+        showHideAllPlayers.innerHTML = 'Hide';
         showHideAllPlayers.className = 'btn btn-primary';
         player1.controls = true;
         player2.controls = true;
@@ -116,7 +132,7 @@ const showAllPlayers = () => {
         player3.hidden = false;
 }
 const hideAllPlayers = () => {
-        showHideAllPlayers.innerHTML = 'Show All';
+        showHideAllPlayers.innerHTML = 'Show';
         showHideAllPlayers.className = 'btn btn-default';
         player1.controls = false;
         player2.controls = false;
@@ -126,7 +142,7 @@ const hideAllPlayers = () => {
         player3.hidden = true;
 }
 const doShowHideAllPlayers = () => {
-    if (showHideAllPlayers.innerHTML === 'Show All') {
+    if (showHideAllPlayers.innerHTML === 'Show') {
         showAllPlayers();
     } else {
         hideAllPlayers();
@@ -136,7 +152,7 @@ const doShowHideAllPlayers = () => {
 const playAllPlayers = () => {
         playPauseAllPlayers.innerHTML = 'Pause All';
         playPauseAllPlayers.className = 'btn btn-primary';
-        if (showHideAllPlayers.innerHTML === 'Show All') {//hidden at moment
+        if (showHideAllPlayers.innerHTML === 'Show') {//hidden at moment
             hideAllPlayers();
         }
         player1.play();
@@ -151,8 +167,8 @@ const pauseAllPlayers = () => {
         player2.pause();
         player3.pause();
 }
-const doPlayPauseAllPlayers = () => {
-    if (playPauseAllPlayers.innerHTML === 'Pause All') {
+const doPlayPauseAllPlayers = (button) => {
+    if (button.innerHTML === 'Pause All') {
         pauseAllPlayers();
     } else {
         playAllPlayers();
@@ -187,15 +203,33 @@ const doChangeDispPhotoHeight = (input) => {
     }
 }
 
-
-const doSnapAllPhotos = () => {
-
-    if (!pressedPlayAtLeastOnceAfterStartOfStreaming) {
-        showMessages('warning','You havent pressed Play since started streaming.');
-        return;
+const doShowHideSnapAllPhotos = (button) => {
+    if (button.innerHTML === 'Hide') {
+        snapAllPhotosArea.style.display = 'none';
+        button.innerHTML = 'Show';
+        button.className = 'btn btn-default';
+    } else {
+        snapAllPhotosArea.style.display = 'block';
+        button.innerHTML = 'Hide';
+        button.className = 'btn btn-primary';
     }
+}
 
-    snapAllPhotos();
+
+const doSnapAllPhotos = (categories) => {
+
+    try {
+        if (!pressedPlayAtLeastOnceAfterStartOfStreaming) {
+            showMessages('warning','You havent pressed Play since started streaming.');
+            return;
+        }
+
+        snapAllPhotos(categories === undefined ? {'none':'none'} : categories);
+
+    } catch (error) {
+        showMessages('danger',error);
+        console.log(error);
+    }
 }
 
 const doSnapAllPhotosContinuous = () => {
@@ -207,12 +241,95 @@ const doStopSnapAllPhotosContinuous = () => {
     snapAllPhotosContinuous = false;
 }
 
+const doSnapBackgroundAll = () => {
+    doSnapAllPhotos({'Background':'Background'});
+}
+
+
+const doShowHideGallery = (button) => {
+    if (button.innerHTML === 'Hide') {
+        galleryArea.style.display = 'none';
+        button.innerHTML = 'Show';
+        button.className = 'btn btn-default';
+    } else {
+        galleryArea.style.display = 'block';
+        button.innerHTML = 'Hide';
+        button.className = 'btn btn-primary';
+    }
+}
 
 const doShowNextPrevImageFromGallery = (button) => {
-    if (button.id === 'showPrevImageFromGallery') {
-        showPrevImageFromGallery();
+    try {
+        if (button.id === 'showPrevImageFromGallery') {
+            showPrevImageFromGallery();
+        } else {
+            showNextImageFromGallery();
+        }
+    } catch (error) {
+        showMessages('danger',error);
+        console.log(error);
+    }
+}
+
+const doShowHideBackgrounds = (button) => {
+    if (button.innerHTML === 'Hide') {
+        backgroundsArea.style.display = 'none';
+        button.innerHTML = 'Show';
+        button.className = 'btn btn-default';
     } else {
-        showNextImageFromGallery();
+        backgroundsArea.style.display = 'block';
+        button.innerHTML = 'Hide';
+        button.className = 'btn btn-primary';
+    }
+}
+
+const doShowNextPrevImageFromBackgrounds = (button) => {
+    try {
+        if (button.id === 'showPrevImageFromBackgrounds') {
+            showPrevImageFromBackgrounds();
+        } else {
+            showNextImageFromBackgrounds();
+        }
+    } catch (error) {
+        showMessages('danger',error);
+        console.log(error);
+    }
+}
+
+const doShowHideBackgroundsPlusGalleries = (button) => {
+    if (button.innerHTML === 'Hide') {
+        backgroundsPlusGalleriesArea.style.display = 'none';
+        button.innerHTML = 'Show';
+        button.className = 'btn btn-default';
+    } else {
+        backgroundsPlusGalleriesArea.style.display = 'block';
+        button.innerHTML = 'Hide';
+        button.className = 'btn btn-primary';
+    }
+}
+
+
+const doSendFromGalleryToMixed = (button) => {
+    if (button.innerHTML === 'Mix') {
+        button.innerHTML = 'No Mix';
+        button.className = 'btn btn-primary';
+        sendCurrentGalleryToMixed = true;
+    } else {
+        button.innerHTML = 'Mix';
+        button.className = 'btn btn-default';
+        sendCurrentGalleryToMixed = false;
+    }
+}
+
+const doSendFromBackgroundsToMixed = (button) => {
+    if (button.innerHTML === 'Mix') {
+        button.innerHTML = 'No Mix';
+        button.className = 'btn btn-primary';
+        sendCurrentBackgroundsToMixed = true;
+    } else {
+        button.innerHTML = 'Mix';
+        button.className = 'btn btn-default';
+        sendCurrentBackgroundsToMixed = false;
     }
 }
 

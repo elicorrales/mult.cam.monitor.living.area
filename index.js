@@ -4,8 +4,6 @@
 let myVideoInputs = [];
 let playerWidth = 0;
 let playerHeight = 0;
-let photoWidth = 0;
-let photoHeight = 0;
 let haveDeviceInfo = false;
 let someCamerasHaveBeenStarted = false;
 
@@ -94,6 +92,34 @@ const captureCameraImage = (camera, canvas) => {
 
 const putImageOnCanvas = (image, canvas) => {
     canvas.getContext('2d').putImageData(image, 0, 0);
+}
+
+const createDifference = (image1, image2) => {
+    const data1 = image1.data;
+    const data2 = image2.data;
+    if (data1.length !== data2.length) {
+        throw 'createDifference: Image1 and Image2 lengths do Not match';
+    }
+    if (image1.width !== image2.width) {
+        throw 'createDifference: Image1 and Image2 widths do Not match';
+    }
+    if (image1.height !== image2.height) {
+        throw 'createDifference: Image1 and Image2 heights do Not match';
+    }
+    let newData = [];
+    for (let i=0; i<data1.length; i+=4) {
+        newData[i] = 255 - Math.abs(data1[i] - data2[i]);
+        newData[i+1] = 255 - Math.abs(data1[i+1] - data2[i+1]);
+        newData[i+2] = 255 - Math.abs(data1[i+2] - data2[i+2]);
+        newData[i+3] = 255;
+    }
+
+    return new ImageData(new Uint8ClampedArray(newData), image1.width, image1.height);
+}
+
+const mixTwoImagesOntoCanvas = (image1, image2, canvas, mixFunc) => {
+    let mixedImage = mixFunc(image1, image2);
+    canvas.getContext('2d').putImageData(mixedImage, 0, 0);
 }
 
 
