@@ -117,11 +117,29 @@ const createDifference = (image1, image2) => {
     return new ImageData(new Uint8ClampedArray(newData), image1.width, image1.height);
 }
 
+const highlightSelfDifference = (data) => {
+    for (let i=0; i<data.length; i+=4) {
+        data[i] = (data[i] > 200) ? 255 : data[i];
+        data[i+1] = 0;
+        data[i+2] = 0;
+        data[i+3] = 255;
+    }
+
+    return new ImageData(new Uint8ClampedArray(newData), image1.width, image1.height);
+}
+
+
+
 const mixTwoImagesOntoCanvas = (image1, image2, canvas, mixFunc) => {
     let mixedImage = mixFunc(image1, image2);
     canvas.getContext('2d').putImageData(mixedImage, 0, 0);
 }
 
+const modifyImageOnCanvas = (canvas, modifyFunc) => {
+    let data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let newImage = modifyFunc(data);
+    canvas.getContext('2d').putImageData(newImage, 0, 0);
+}
 
 /******************************************************************************************************
  * execution

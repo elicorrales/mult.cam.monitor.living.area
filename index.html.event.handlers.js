@@ -308,6 +308,20 @@ const doShowHideBackgroundsPlusGalleries = (button) => {
     }
 }
 
+const doShowHideMixedImagesSelfDifferences = (button) => {
+    if (button.innerHTML === 'Differences') {
+        backgroundsPlusGalleriesArea.style.display = 'none';
+        button.innerHTML = 'Reset';
+        button.className = 'btn btn-default';
+        mixCurrentGalleryAndBackgroundImages();
+    } else {
+        backgroundsPlusGalleriesArea.style.display = 'block';
+        button.innerHTML = 'Differences';
+        button.className = 'btn btn-primary';
+        showMixedImagesSelfDifferences();
+    }
+}
+
 
 const doSendFromGalleryToMixed = (button) => {
     if (button.innerHTML === 'Mix') {

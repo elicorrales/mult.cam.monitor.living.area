@@ -53,6 +53,17 @@ const snapContinuous = () => {
     setTimeout(() => { doSnapAllPhotos(true) }, 500);
 }
 
+const showMixedImagesSelfDifferences = () => {
+    if (imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
+        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas1, highlightSelfDifference);
+    }
+    if (imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
+        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2, highlightSelfDifference);
+    }
+    if (imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
+        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, highlightSelfDifference);
+    }
+}
 
 const mixCurrentGalleryAndBackgroundImages = () => {
     if (imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
@@ -125,10 +136,10 @@ const showNextImageFromGallery = () => {
 
 const showPrevImageFromGallery = () => {
     let whichImageGallery = getWhichGallery();
-    if (imageGalleryCurrentIndex > whichImageGallery.length -2) {
-        imageGalleryCurrentIndex = 0;
+    if (imageGalleryCurrentIndex < 1) {
+        imageGalleryCurrentIndex = whichImageGallery.length - 1;
     } else {
-        imageGalleryCurrentIndex++;
+        imageGalleryCurrentIndex--;
     }
     displayImagesFromGallery(imageGalleryCurrentIndex);
     if (sendCurrentGalleryToMixed) {
@@ -188,10 +199,10 @@ const showNextImageFromBackgrounds = () => {
 
 const showPrevImageFromBackgrounds = () => {
     let whichBackgrounds = getWhichBackgrounds();
-    if (backgroundsCurrentIndex > whichBackgrounds.length -2) {
-        backgroundsCurrentIndex = 0;
+    if (backgroundsCurrentIndex < 1) {
+        backgroundsCurrentIndex = whichBackgrounds.length - 1;
     } else {
-        backgroundsCurrentIndex++;
+        backgroundsCurrentIndex--;
     }
     displayImagesFromBackgrounds(backgroundsCurrentIndex);
     if (sendCurrentBackgroundsToMixed) {
