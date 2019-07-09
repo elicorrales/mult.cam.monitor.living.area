@@ -10,6 +10,8 @@ let photoHeight = 0;
 let photoDispWidth = 0;
 let photoDispHeight = 0;
 
+const rightCanvasPos = {x:0, y:0}
+
 /******************************************************************************************************
 *******************************************************************************************************
 * function definitions
@@ -65,7 +67,7 @@ const doStartStopAllCameras = (button) => {
             backgroundsDispCanvas1.style.display = 'inline';
             backgroundsDispCanvas2.style.display = 'inline';
             backgroundsDispCanvas3.style.display = 'inline';
-            backgroundsPlusGalleriesDispCanvas1.style.display = 'inline';
+            //backgroundsPlusGalleriesDispCanvas1.style.display = 'inline';//main laptop camera-related stuff not used in this app
             backgroundsPlusGalleriesDispCanvas2.style.display = 'inline';
             backgroundsPlusGalleriesDispCanvas3.style.display = 'inline';
         } else {
@@ -124,10 +126,10 @@ const doStopCamera = (button) => {
 const showAllPlayers = () => {
         showHideAllPlayers.innerHTML = 'Hide';
         showHideAllPlayers.className = 'btn btn-primary';
-        player1.controls = true;
+        //player1.controls = true;  //not going to use main laptop camera for this app
+        //player1.hidden = false; //not going to use main laptop camera for this app
         player2.controls = true;
         player3.controls = true;
-        player1.hidden = false;
         player2.hidden = false;
         player3.hidden = false;
 }
@@ -258,19 +260,6 @@ const doShowHideGallery = (button) => {
     }
 }
 
-const doShowNextPrevImageFromGallery = (button) => {
-    try {
-        if (button.id === 'showPrevImageFromGallery') {
-            showPrevImageFromGallery();
-        } else {
-            showNextImageFromGallery();
-        }
-    } catch (error) {
-        showMessages('danger',error);
-        console.log(error);
-    }
-}
-
 const doShowHideBackgrounds = (button) => {
     if (button.innerHTML === 'Hide') {
         backgroundsArea.style.display = 'none';
@@ -283,12 +272,33 @@ const doShowHideBackgrounds = (button) => {
     }
 }
 
+const doShowNextPrevImageFromGallery = (button) => {
+    try {
+        if (button.id === 'showPrevImageFromGallery') {
+            showPrevImageFromGallery();
+        } else {
+            showNextImageFromGallery();
+        }
+        if (showHideSelfDifference.innerHTML === 'Reset' &&
+            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
+            showMixedImagesSelfDifferences();
+        }
+    } catch (error) {
+        showMessages('danger',error);
+        console.log(error);
+    }
+}
+
 const doShowNextPrevImageFromBackgrounds = (button) => {
     try {
         if (button.id === 'showPrevImageFromBackgrounds') {
             showPrevImageFromBackgrounds();
         } else {
             showNextImageFromBackgrounds();
+        }
+        if (showHideSelfDifference.innerHTML === 'Reset' &&
+            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
+            showMixedImagesSelfDifferences();
         }
     } catch (error) {
         showMessages('danger',error);
@@ -310,15 +320,13 @@ const doShowHideBackgroundsPlusGalleries = (button) => {
 
 const doShowHideMixedImagesSelfDifferences = (button) => {
     if (button.innerHTML === 'Differences') {
-        backgroundsPlusGalleriesArea.style.display = 'none';
         button.innerHTML = 'Reset';
         button.className = 'btn btn-default';
-        mixCurrentGalleryAndBackgroundImages();
+        showMixedImagesSelfDifferences();
     } else {
-        backgroundsPlusGalleriesArea.style.display = 'block';
         button.innerHTML = 'Differences';
         button.className = 'btn btn-primary';
-        showMixedImagesSelfDifferences();
+        mixCurrentGalleryAndBackgroundImages();
     }
 }
 
@@ -345,6 +353,20 @@ const doSendFromBackgroundsToMixed = (button) => {
         button.className = 'btn btn-default';
         sendCurrentBackgroundsToMixed = false;
     }
+}
+
+const doLeftRightAlign = (slider) => {
+
+    let value = parseInt(slider.value);
+
+    let delta = Math.abs(value - prevMoveVal);
+    if (value < prevMoveVal) { // moved left
+        rightCanvasPos.x -= delta;
+    } else {                   // moved right
+        rightCanvasPos.x += delta;
+    }
+    prevMoveVal = value;
+    mergeImagesRightToLeft(rightCanvasPos);
 }
 
 /******************************************************************************************************

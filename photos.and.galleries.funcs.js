@@ -24,21 +24,21 @@ const snapPhoto = (whichPlayer, whichPhotoCanvas, whichPhotoDispCanvas, whichIma
     whichImageForDispOnlyGallery.push({time:now,categories,image:captureCameraImage(whichPlayer, whichPhotoDispCanvas)});
 }
 const snapAllPhotos = (categories) => {
-    if (player1.srcObject.active) {
+    if (player1.srcObject !== null && player1.srcObject.active) {
         if (categories.Background !== undefined) {
             snapPhoto(player1, photoCanvas1, photoDispCanvas1, backgroundDataGallery1, hiResBackgroundGallery1, categories);
         } else {
             snapPhoto(player1, photoCanvas1, photoDispCanvas1, imageDataGallery1, imageForDispOnlyGallery1, categories);
         }
     }
-    if (player2.srcObject.active) {
+    if (player2.srcObject !== null && player2.srcObject.active) {
         if (categories.Background !== undefined) {
             snapPhoto(player2, photoCanvas2, photoDispCanvas2, backgroundDataGallery2, hiResBackgroundGallery2, categories);
         } else {
             snapPhoto(player2, photoCanvas2, photoDispCanvas2, imageDataGallery2, imageForDispOnlyGallery2, categories);
         }
     }
-    if (player3.srcObject.active) {
+    if (player3.srcObject !== null && player3.srcObject.active) {
         if (categories.Background !== undefined) {
             snapPhoto(player3, photoCanvas3, photoDispCanvas3, backgroundDataGallery3, hiResBackgroundGallery3, categories);
         } else {
@@ -54,29 +54,36 @@ const snapContinuous = () => {
 }
 
 const showMixedImagesSelfDifferences = () => {
-    if (imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
-        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas1, highlightSelfDifference);
+    if (player1.srcObject !== null && imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
+        modifyImageOnCanvas(
+            backgroundsPlusGalleriesDispCanvas1,
+            {threshold:parseInt(diffThreshold.value)}
+        );
     }
-    if (imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
-        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2, highlightSelfDifference);
+    if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
+        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2,
+            {threshold:parseInt(diffThreshold.value)}
+        );
     }
-    if (imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
-        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, highlightSelfDifference);
+    if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
+        modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, 
+             {threshold:parseInt(diffThreshold.value)}
+        );
     }
 }
 
 const mixCurrentGalleryAndBackgroundImages = () => {
-    if (imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
+    if (player1.srcObject !== null && imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery1[imageGalleryCurrentIndex].image, hiResBackgroundGallery1[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas1, createDifference);
     }
-    if (imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
+    if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery2[imageGalleryCurrentIndex].image, hiResBackgroundGallery2[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas2, createDifference);
     }
-    if (imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
+    if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery3[imageGalleryCurrentIndex].image, hiResBackgroundGallery3[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas3, createDifference);
@@ -210,19 +217,39 @@ const showPrevImageFromBackgrounds = () => {
     }
 }
 
+const mergeImagesRightToLeft = (leftCanvas, rightCanvas, rightPos) => {
+    let image1 = leftCanvas.getContext('2d').getImageData(0, 0, leftCanvas.width, leftCanvas.height);
+    let image2 = rightCanvas.getContext('2d').getImageData(0, 0, rightCanvas.width, rightCanvas.height);
+
+    workingCanvas.getContext('2d').putImageData(image1, 0, 0);
+    workingCanvas.getContext('2d').putImageData(image2, rightPos.x, rightPos.y);
+
+    // does right image overlap left image?
+    if (leftCanvas.width > rightPos.x) {
+        let overlap = leftCanvas.width -  rightPos.x;
+        let overlapSummedImg = makeOverlappedSummedImage(leftCanvas, rightCanvas, overlap);
+        workingCanvas.getContext('2d').putImageData(overlapSummedImg, rightPos.x - overlap, rightPos.y);
+        summedCanvas.getContext('2d').putImageData(overlapSummedImg, 0 , 0);
+        let overlapDifferenceImg = makeOverlappedDifferenceImage(leftCanvas, rightCanvas, overlap);
+        differenceCanvas.getContext('2d').putImageData(overlapDifferenceImg, 0 , 0);
+        numDiff.value = (getNumDiff(differenceCanvas, overlap) * 100).toFixed(2);
+        numDiffVal.innerHTML = numDiff.value;
+        allNumDiffs[(overlap - rightCanvas.width)] = numDiff.value;
+    }
+}
 
 const savePhotos = () => {
-    if (player1.srcObject.active) {
+    if (player1.srcObject !== null && player1.srcObject.active) {
         photoCanvas1.toBlob(blob => {
             saveAs(blob,'photo-1-'+now);
         });
     }
-    if (player2.srcObject.active) {
+    if (player2.srcObject !== null && player2.srcObject.active) {
         photoCanvas2.toBlob(blob => {
             saveAs(blob,'photo-2-'+now);
         });
     }
-    if (player3.srcObject.active) {
+    if (player3.srcObject !== null && player3.srcObject.active) {
         photoCanvas3.toBlob(blob => {
             saveAs(blob,'photo-3-'+now);
         });

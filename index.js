@@ -72,7 +72,7 @@ const startAllCameras = async () => {
     stopAllCameras();
     await getDevicesInfo()
         .then(() => {
-            startCamera(myVideoInputs[0], player1);
+            //startCamera(myVideoInputs[0], player1); // not going to use main laptop camera for this app
             startCamera(myVideoInputs[1], player2);
             startCamera(myVideoInputs[2], player3);
             someCamerasHaveBeenStarted = true;
@@ -117,17 +117,33 @@ const createDifference = (image1, image2) => {
     return new ImageData(new Uint8ClampedArray(newData), image1.width, image1.height);
 }
 
-const highlightSelfDifference = (data) => {
-    for (let i=0; i<data.length; i+=4) {
-        data[i] = (data[i] > 200) ? 255 : data[i];
-        data[i+1] = 0;
-        data[i+2] = 0;
-        data[i+3] = 255;
+const modification = (data, parms) => {
+    if (parms.threshold === undefined) { 
+        throw 'highlightSelfDifference: missing param : threshold';
     }
-
-    return new ImageData(new Uint8ClampedArray(newData), image1.width, image1.height);
+    let threshold = parms.threshold;
+/*
+    if (parms.brightness === undefined) { 
+        throw 'highlightSelfDifference: missing param : brightness';
+    }
+    let brightness = parms.brightness;
+*/
+    let newData = [];
+    for (let i=0; i<data.length; i+=4) {
+        let min = Math.min(data[i], data[i+1], data[i+2]);
+        let max = Math.min(data[i+1], data[i+2]);
+        if (min < threshold) {
+            newData[i+1] = 255 - threshold;
+            newData[i+2] = 255 - threshold;
+        } else {
+            newData[i+1] = 255;
+            newData[i+2] = 255;
+        }
+        newData[i] = 255;
+        newData[i+3] = 255;
+    }
+    return newData;
 }
-
 
 
 const mixTwoImagesOntoCanvas = (image1, image2, canvas, mixFunc) => {
@@ -135,10 +151,13 @@ const mixTwoImagesOntoCanvas = (image1, image2, canvas, mixFunc) => {
     canvas.getContext('2d').putImageData(mixedImage, 0, 0);
 }
 
-const modifyImageOnCanvas = (canvas, modifyFunc) => {
-    let data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-    let newImage = modifyFunc(data);
-    canvas.getContext('2d').putImageData(newImage, 0, 0);
+const modifyImageOnCanvas = (canvas, parms) => {
+    let ctx = canvas.getContext('2d');
+    let image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = image.data;
+    let newData = modification(data, parms);
+    let newImage = new ImageData(new Uint8ClampedArray(newData), image.width, image.height);
+    ctx.putImageData(newImage, 0, 0);
 }
 
 /******************************************************************************************************
