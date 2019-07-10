@@ -21,7 +21,7 @@
                     <button class="btn btn-default" id="playPauseAllPlayers" onclick="doPlayPauseAllPlayers(this)" disabled>Play All</button>
                 </div>
                 <div class="panel-body">
-                    <video id="player1"></video>
+                    <video style="display:none" id="player1"></video>
                     <video id="player2"></video>
                     <video id="player3"></video>
                 </div>
@@ -44,12 +44,12 @@
                 </div>
                 <div style="display:none" id="snapAllPhotosArea" class="panel-body">
                     <div class="row">
-                        <canvas id="photoCanvas1"></canvas>
+                        <canvas style="display:none" id="photoCanvas1"></canvas>
                         <canvas id="photoCanvas2"></canvas>
                         <canvas id="photoCanvas3"></canvas>
                     </div>
                     <div class="row">
-                        <canvas id="photoDispCanvas1" width="600" height="300"></canvas>
+                        <canvas style="display:none" id="photoDispCanvas1" width="600" height="300"></canvas>
                         <canvas id="photoDispCanvas2" width="600" height="300"></canvas>
                         <canvas id="photoDispCanvas3" width="600" height="300"></canvas>
                     </div>
@@ -70,7 +70,7 @@
                     <button class="btn btn-default" id="sendFromBackgroundsToMixed" onclick="doSendFromBackgroundsToMixed(this)">Mix</button>
                 </div>
                 <div style="display:none" id="backgroundsArea" class="panel-body">
-                    <canvas id="backgroundsDispCanvas1" width="600" height="300"></canvas>
+                    <canvas style="display:none" id="backgroundsDispCanvas1" width="600" height="300"></canvas>
                     <canvas id="backgroundsDispCanvas2" width="600" height="300"></canvas>
                     <canvas id="backgroundsDispCanvas3" width="600" height="300"></canvas>
                 </div>
@@ -90,7 +90,7 @@
                 <div style="display:none" id="galleryArea" class="panel-body">
                     <div>
                         <div id="categories1"></div>
-                        <canvas id="galleryDispCanvas1" width="600" height="300"></canvas>
+                        <canvas style="display:none" id="galleryDispCanvas1" width="600" height="300"></canvas>
                     </div>
                     <div>
                         <div id="categories2"></div>
@@ -109,7 +109,12 @@
                 <div class="panel-heading">
                     <strong>MIXED</strong>
                     <button class="btn btn-default" id="showHideBackgroundsPlusGalleries" onclick="doShowHideBackgroundsPlusGalleries(this)">Show</button>
-                    <button class="btn btn-default" id="showHideSelfDifference" onclick="doShowHideMixedImagesSelfDifferences(this)">Differences</button>
+                    <button class="btn btn-default" id="showHideSelfSolidDifference" onclick="doShowHideMixedImagesSelfSolidDifferences(this)">Solid</button>
+                    <button class="btn btn-default" id="showHideSelfMonoDifference" onclick="doShowHideMixedImagesSelfMonoDifferences(this)">Monochrome</button>
+                    <button class="btn btn-default" id="showHideSelfColorDifference" onclick="doShowHideMixedImagesSelfColorDifferences(this)">Color</button>
+                    <span id="colorMode">Normal Diff</span>
+                    <p>
+                    Contrast:<input id="contrast" type="range" min="0" max="255" value="183" class="slider" />
                     Diff Threshold:<input id="diffThreshold" type="range" min="0" max="255" value="183" class="slider" />
                     Left|Right Align:<input id="leftRightAlign" type="range" min="-800" max="800" value="0" class="slider" oninput="doLeftRightAlign(this)"/>
                 </div>

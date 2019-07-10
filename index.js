@@ -118,29 +118,64 @@ const createDifference = (image1, image2) => {
 }
 
 const modification = (data, parms) => {
+    if (parms.contrast === undefined) { 
+        throw 'highlightSelfDifference: missing param : contrast';
+    }
+    let contrast = parms.contrast;
+
+    if (parms.typeOfDiff === undefined) { 
+        throw 'highlightSelfDifference: missing param : typeOfDiff';
+    }
+    let typeOfDiff = parms.typeOfDiff;
+
     if (parms.threshold === undefined) { 
         throw 'highlightSelfDifference: missing param : threshold';
     }
     let threshold = parms.threshold;
-/*
-    if (parms.brightness === undefined) { 
-        throw 'highlightSelfDifference: missing param : brightness';
-    }
-    let brightness = parms.brightness;
-*/
+
     let newData = [];
     for (let i=0; i<data.length; i+=4) {
-        let min = Math.min(data[i], data[i+1], data[i+2]);
-        let max = Math.min(data[i+1], data[i+2]);
-        if (min < threshold) {
-            newData[i+1] = 255 - threshold;
-            newData[i+2] = 255 - threshold;
-        } else {
-            newData[i+1] = 255;
-            newData[i+2] = 255;
+
+        if (contrast > 0 && typeOfDiff  === 'color') {
+            newData[i] = data[i] > 128 ? data[i] + contrast : data[i] - contrast;
+            newData[i] = newData[i] > 255? 255 : newData[i];
+            newData[i] = newData[i] < 0? 0 : newData[i];
+            newData[i+1] = data[i+1] > 128 ? data[i+1] + contrast : data[i+1] - contrast;
+            newData[i+1] = newData[i+1] > 255? 255 : newData[i+1];
+            newData[i+1] = newData[i+1] < 0? 0 : newData[i+1];
+            newData[i+2] = data[i+2] > 128 ? data[i+2] + contrast : data[i+2] - contrast;
+            newData[i+2] = newData[i+2] > 255? 255 : newData[i+2];
+            newData[i+2] = newData[i+2] < 0? 0 : newData[i+2];
         }
-        newData[i] = 255;
-        newData[i+3] = 255;
+
+        if (contrast > 0 && typeOfDiff  === 'mono') {
+            let min = Math.min(data[i], data[i+1], data[i+2]);
+            newData[i] = data[i] > 128 ? data[i] + contrast : data[i] - contrast;
+            newData[i] = newData[i] > 255? 255 : newData[i];
+            newData[i] = newData[i] < 0? 0 : newData[i];
+            newData[i+1] = newData[i];
+            newData[i+2] = newData[i];
+        }
+
+
+        //this means we see only red or white.. no inbetween, no other colors
+        //red is the diff (the image), white is the background
+        if (typeOfDiff === 'solid') {
+
+            let min = Math.min(data[i], data[i+1], data[i+2]);
+
+            newData[i] = 255;   //leave Red at max
+            if (min < threshold) {
+                newData[i+1] = 255 - threshold;
+                newData[i+2] = 255 - threshold;
+            } else {
+                newData[i+1] = 255;
+                newData[i+2] = 255;
+            }
+        }
+
+
+        newData[i+3] = 255; //leave alpha at max
     }
     return newData;
 }

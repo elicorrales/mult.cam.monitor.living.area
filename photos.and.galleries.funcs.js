@@ -53,21 +53,21 @@ const snapContinuous = () => {
     setTimeout(() => { doSnapAllPhotos(true) }, 500);
 }
 
-const showMixedImagesSelfDifferences = () => {
+const showMixedImagesSelfDifferences = (typeOfDiff) => {
     if (player1.srcObject !== null && imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
         modifyImageOnCanvas(
             backgroundsPlusGalleriesDispCanvas1,
-            {threshold:parseInt(diffThreshold.value)}
+            {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
         );
     }
     if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2,
-            {threshold:parseInt(diffThreshold.value)}
+            {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
         );
     }
     if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, 
-             {threshold:parseInt(diffThreshold.value)}
+             {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
         );
     }
 }
