@@ -106,6 +106,7 @@ const createDifference = (image1, image2) => {
     if (image1.height !== image2.height) {
         throw 'createDifference: Image1 and Image2 heights do Not match';
     }
+
     let newData = [];
     for (let i=0; i<data1.length; i+=4) {
         newData[i] = 255 - Math.abs(data1[i] - data2[i]);
@@ -194,6 +195,37 @@ const modifyImageOnCanvas = (canvas, parms) => {
     let newImage = new ImageData(new Uint8ClampedArray(newData), image.width, image.height);
     ctx.putImageData(newImage, 0, 0);
 }
+
+const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {
+    const data1 = image1.data;
+    const data2 = image2.data;
+    if (data1.length !== data2.length) {
+        throw 'createDifference: Image1 and Image2 lengths do Not match';
+    }
+    if (image1.width !== image2.width) {
+        throw 'createDifference: Image1 and Image2 widths do Not match';
+    }
+    if (image1.height !== image2.height) {
+        throw 'createDifference: Image1 and Image2 heights do Not match';
+    }
+    let totalDifference = 0;
+    for (let i=0; i<data1.length; i+=4) {
+        totalDifference += Math.abs(data1[i] - data2[i]);
+        totalDifference += Math.abs(data1[i+1] - data2[i+1]);
+        totalDifference += Math.abs(data1[i+2] - data2[i+2]);
+    }
+    return totalDifference / 100;
+}
+
+//const areTwoImagesTheSame = (canvas1, canvas2, acceptableDifference) => {
+const areTwoImagesTheSame = (image1, image2, acceptableDifference) => {
+    if (image1.image.width !== image2.image.width || image1.image.height !== image2.image.height) {
+        throw 'Images are not same width or height';
+    }
+    let totalDifference = getTotalDifferenceValueBetweenTwoImages(image1.image, image2.image);
+    return (totalDifference < acceptableDifference);
+}
+
 
 /******************************************************************************************************
  * execution

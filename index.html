@@ -12,8 +12,8 @@
                 <div class="panel-heading">
                     <strong>LIVE</strong>
                     <button class="btn btn-default" id="showHideAllPlayers" onclick="doShowHideAllPlayers(this)">Show</button>
-                    Width:<input name="playerWidth" id="playerWidth" type="text" size="3" maxlength="3" value="600" onchange="doChangePlayerWidth(this)" />
-                    Height:<input name="playerHeight" id="playerHeight" type="text" size="3" maxlength="3" value="300" onchange="doChangePlayerHeight(this)" />
+                    Width:<input name="playerWidth" id="playerWidth" type="text" size="3" maxlength="3" value="700" onchange="doChangePlayerWidth(this)" />
+                    Height:<input name="playerHeight" id="playerHeight" type="text" size="3" maxlength="3" value="400" onchange="doChangePlayerHeight(this)" />
                     <button class="btn btn-default" id="stopPlayer1" onclick="doStopCamera(this)">Stop 1</button>
                     <button class="btn btn-default" id="stopPlayer2" onclick="doStopCamera(this)">Stop 2</button>
                     <button class="btn btn-default" id="stopPlayer3" onclick="doStopCamera(this)">Stop 3</button>
@@ -33,22 +33,27 @@
                 <div class="panel-heading">
                     <strong>CAPTURE</strong>
                     <button class="btn btn-default" id="showHideSnapAllPhotos" onclick="doShowHideSnapAllPhotos(this)">Show</button>
-                    Width:<input name="photoWidth" id="photoWidth" type="text" size="3" maxlength="3" value="600" onchange="doChangePhotoWidth(this)" />
-                    Height:<input name="photoHeight" id="photoHeight" type="text" size="3" maxlength="3" value="300" onchange="doChangePhotoHeight(this)" />
+                    Width:<input name="photoWidth" id="photoWidth" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoWidth(this)" />
+                    Height:<input name="photoHeight" id="photoHeight" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoHeight(this)" />
                     <button class="btn btn-default" id="snapAllPhotos" onclick="doSnapAllPhotos()">Snap Photo</button>
                     <button class="btn btn-default" id="snapAllPhotosContinuous" onclick="doSnapAllPhotosContinuous()">Continuous</button>
+                    <button class="btn btn-default" id="snapAllPhotosContinuousSaveMovment" onclick="doSnapAllPhotosContinuousSaveMovement()">Cont Save Movement</button>
                     <button class="btn btn-default" id="stopSnapAllPhotosContinuous" onclick="doStopSnapAllPhotosContinuous()">Stop</button>
-                    DispWidth:<input name="photoDispWidth" id="photoDispWidth" type="text" size="3" maxlength="3" value="600" onchange="doChangeDispPhotoWidth(this)" />
-                    DispHeight:</label> <input name="photoDispHeight" id="photoDispHeight" type="text" size="3" maxlength="3" value="300" onchange="doChangeDispPhotoHeight(this)" />
+                    DispWidth:<input name="photoDispWidth" id="photoDispWidth" type="text" size="3" maxlength="3" value="200" onchange="doChangeDispPhotoWidth(this)" />
+                    DispHeight:</label> <input name="photoDispHeight" id="photoDispHeight" type="text" size="3" maxlength="3" value="100" onchange="doChangeDispPhotoHeight(this)" />
                     <button class="btn btn-default" id="snapBackgroundAll" onclick="doSnapBackgroundAll(this)">Snap Background</button>
+                    <input id="acceptableDifference" type="range" min="0" max="10000" value="20000" class="slider"/>
+                    Diff Threshold:<span id="acceptableDifferenceValue">0</span>
                 </div>
                 <div style="display:none" id="snapAllPhotosArea" class="panel-body">
                     <div class="row">
+                        Actual Size
                         <canvas style="display:none" id="photoCanvas1"></canvas>
                         <canvas id="photoCanvas2"></canvas>
                         <canvas id="photoCanvas3"></canvas>
                     </div>
                     <div class="row">
+                        For Display Only
                         <canvas style="display:none" id="photoDispCanvas1" width="600" height="300"></canvas>
                         <canvas id="photoDispCanvas2" width="600" height="300"></canvas>
                         <canvas id="photoDispCanvas3" width="600" height="300"></canvas>
@@ -68,6 +73,7 @@
                     <button class="btn btn-default" id="showPrevImageFromBackgrounds" onclick="doShowNextPrevImageFromBackgrounds(this)">Prev</button>
                     <button class="btn btn-default" id="showNextImageFromBackgrounds" onclick="doShowNextPrevImageFromBackgrounds(this)">Next</button>
                     <button class="btn btn-default" id="sendFromBackgroundsToMixed" onclick="doSendFromBackgroundsToMixed(this)">Mix</button>
+                    <font size="+2"><span id="numberOfBackgrounds">0</span></font>
                 </div>
                 <div style="display:none" id="backgroundsArea" class="panel-body">
                     <canvas style="display:none" id="backgroundsDispCanvas1" width="600" height="300"></canvas>
@@ -86,6 +92,7 @@
                     <button class="btn btn-default" id="showNextImageFromGallery" onclick="doShowNextPrevImageFromGallery(this)">Next</button>
                     <button class="btn btn-default" id="sendFromGalleryToMixed" onclick="doSendFromGalleryToMixed(this)">Mix</button>
                     Categories:<span id="generatedCategoryButtonsForGalleryImage"></span>
+                    <font size="+2"><strong><span id="numberOfImages">0</span></strong></font>
                 </div>
                 <div style="display:none" id="galleryArea" class="panel-body">
                     <div>

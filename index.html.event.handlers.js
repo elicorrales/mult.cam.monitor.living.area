@@ -218,7 +218,15 @@ const doShowHideSnapAllPhotos = (button) => {
 }
 
 
-const doSnapAllPhotos = (categories) => {
+const doSnapAllPhotos = (snapParams) => {
+
+    let categories;
+    let removeCapturedImagesIfSame;
+
+    if (snapParams !== undefined) {
+        categories = snapParams.categories;
+        removeCapturedImagesIfSame = snapParams.removeCapturedImagesIfSame;
+    }
 
     try {
         if (!pressedPlayAtLeastOnceAfterStartOfStreaming) {
@@ -228,15 +236,33 @@ const doSnapAllPhotos = (categories) => {
 
         snapAllPhotos(categories === undefined ? {'none':'none'} : categories);
 
+        removeLatestCapturedImagesFromGalleriesIfSameAsPrevious();
+
+        if (removeCapturedImagesIfSame !== undefined && removeCapturedImagesIfSame === true) {
+            removeLatestCapturedImagesFromGalleriesIfSameAsBackground();
+        }
+
     } catch (error) {
         showMessages('danger',error);
         console.log(error);
     }
+
+    if (snapAllPhotosContinuous) {
+        setTimeout(() => { 
+            doSnapAllPhotos(snapParams);
+        }, 500);
+    }
+
 }
 
 const doSnapAllPhotosContinuous = () => {
     snapAllPhotosContinuous = true;
-    doSnapAllPhotos();
+    doSnapAllPhotos({});
+}
+
+const doSnapAllPhotosContinuousSaveMovement = () => {
+    snapAllPhotosContinuous = true;
+    doSnapAllPhotos({removeCapturedImagesIfSame:true});
 }
 
 const doStopSnapAllPhotosContinuous = () => {
@@ -244,7 +270,7 @@ const doStopSnapAllPhotosContinuous = () => {
 }
 
 const doSnapBackgroundAll = () => {
-    doSnapAllPhotos({'Background':'Background'});
+    doSnapAllPhotos({'categories':{'Background':'Background'}});
 }
 
 

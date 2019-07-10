@@ -17,14 +17,19 @@ const imageForDispOnlyGallery3 = [];
 let   imageGalleryCurrentIndex = 0;
 
 const snapPhoto = (whichPlayer, whichPhotoCanvas, whichPhotoDispCanvas, whichImageDataGallery, whichImageForDispOnlyGallery, categories) => {
-    const now = new Date().getHours() + '.' + new Date().getMinutes() + '.' + new Date().getSeconds() + '.' + new Date().getMilliseconds();
     whichPhotoCanvas.width = photoWidth; whichPhotoCanvas.height = photoHeight;
     whichPhotoDispCanvas.width = photoDispWidth; whichPhotoDispCanvas.height = photoDispHeight;
-    whichImageDataGallery.push(captureCameraImage(whichPlayer, whichPhotoCanvas));
-    whichImageForDispOnlyGallery.push({time:now,categories,image:captureCameraImage(whichPlayer, whichPhotoDispCanvas)});
+    let imageCaptured = captureCameraImage(whichPlayer, whichPhotoCanvas);
+    let imageCapturedForDisp = captureCameraImage(whichPlayer, whichPhotoDispCanvas);
+    const now = new Date().getHours() + '.' + new Date().getMinutes() + '.' + new Date().getSeconds() + '.' + new Date().getMilliseconds();
+    whichImageDataGallery.push(imageCaptured);
+    whichImageForDispOnlyGallery.push({time:now,categories,image:imageCapturedForDisp});
 }
+
 const snapAllPhotos = (categories) => {
+    let whichSourceToUseAsNumberOfCaptures = 0;
     if (player1.srcObject !== null && player1.srcObject.active) {
+        whichSourceToUseAsNumberOfCaptures++;
         if (categories.Background !== undefined) {
             snapPhoto(player1, photoCanvas1, photoDispCanvas1, backgroundDataGallery1, hiResBackgroundGallery1, categories);
         } else {
@@ -32,6 +37,7 @@ const snapAllPhotos = (categories) => {
         }
     }
     if (player2.srcObject !== null && player2.srcObject.active) {
+        whichSourceToUseAsNumberOfCaptures++;
         if (categories.Background !== undefined) {
             snapPhoto(player2, photoCanvas2, photoDispCanvas2, backgroundDataGallery2, hiResBackgroundGallery2, categories);
         } else {
@@ -39,18 +45,128 @@ const snapAllPhotos = (categories) => {
         }
     }
     if (player3.srcObject !== null && player3.srcObject.active) {
+        whichSourceToUseAsNumberOfCaptures++;
         if (categories.Background !== undefined) {
             snapPhoto(player3, photoCanvas3, photoDispCanvas3, backgroundDataGallery3, hiResBackgroundGallery3, categories);
         } else {
             snapPhoto(player3, photoCanvas3, photoDispCanvas3, imageDataGallery3, imageForDispOnlyGallery3, categories);
         }
     }
-    if (snapAllPhotosContinuous === true) {
-        snapContinuous();
+
+    switch (whichSourceToUseAsNumberOfCaptures) {
+        case 1:
+            numberOfBackgrounds.innerHTML = hiResBackgroundGallery1.length;
+            numberOfImages.innerHTML = imageForDispOnlyGallery1.length;
+            break;
+        case 2:
+            numberOfBackgrounds.innerHTML = hiResBackgroundGallery2.length;
+            numberOfImages.innerHTML = imageForDispOnlyGallery2.length;
+            break;
+        case 3:
+            numberOfBackgrounds.innerHTML = hiResBackgroundGallery3.length;
+            numberOfImages.innerHTML = imageForDispOnlyGallery3.length;
+            break;
+
     }
 }
-const snapContinuous = () => {
-    setTimeout(() => { doSnapAllPhotos(true) }, 500);
+
+const areTheTwoMostRecentSnappedImageSame = () => {
+
+    let comparedImages = false;
+    let imagesAreTheSame = false;
+
+    let imagesFrom1Same = true;
+    let imagesFrom2Same = true;
+    let imagesFrom3Same = true;
+
+    if (player1.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery1.length;
+        if (len1 > 1) {
+            comparedImages = true;
+            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery1[len1-1], imageForDispOnlyGallery1[len1-2], parseInt(acceptableDifference.value));
+        } 
+    } 
+    if (player2.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery2.length;
+        if (len1 > 1) {
+            comparedImages = true;
+            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery2[len1-1], imageForDispOnlyGallery2[len1-2], parseInt(acceptableDifference.value));
+        }
+    }
+    if (player3.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery3.length;
+        if (len1 > 1) {
+            comparedImages = true;
+            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery3[len1-1], imageForDispOnlyGallery3[len1-2], parseInt(acceptableDifference.value));
+        }
+    }
+
+    imagesAreTheSame = imagesFrom1Same && imagesFrom2Same && imagesFrom3Same;
+    return [comparedImages, imagesAreTheSame];
+}
+
+
+const isMostRecentSnappedImageSameAsMostRecentBackgroundImage = () => {
+
+    let comparedImages = false;
+    let imagesAreTheSame = false;
+
+    let imagesFrom1Same = true;
+    let imagesFrom2Same = true;
+    let imagesFrom3Same = true;
+
+    if (player1.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery1.length;
+        let len2 = hiResBackgroundGallery1.length;
+        if (len1 > 0 && len2 > 0) {
+            comparedImages = true;
+            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery1[len1-1], hiResBackgroundGallery1[len2-1], parseInt(acceptableDifference.value));
+        } 
+    } 
+    if (player2.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery2.length;
+        let len2 = hiResBackgroundGallery2.length;
+        if (len1 > 0 && len2 > 0) {
+            comparedImages = true;
+            imagesFrom2Same = areTwoImagesTheSame(imageForDispOnlyGallery2[len1-1], hiResBackgroundGallery2[len2-1], parseInt(acceptableDifference.value));
+        }
+    }
+    if (player3.srcObject !== null) {
+        let len1 = imageForDispOnlyGallery3.length;
+        let len2 = hiResBackgroundGallery3.length;
+        if (len1 > 0 && len2 > 0) {
+            comparedImages = true;
+            imagesFrom3Same = areTwoImagesTheSame(imageForDispOnlyGallery3[len1-1], hiResBackgroundGallery3[len2-1], parseInt(acceptableDifference.value));
+        }
+    }
+
+    imagesAreTheSame = imagesFrom1Same && imagesFrom2Same && imagesFrom3Same;
+    return [comparedImages, imagesAreTheSame];
+}
+
+const removeLatestCapturedImagesFromGalleriesIfSameAsPrevious = () => {
+    const [compared, areSame] = areTheTwoMostRecentSnappedImageSame();
+    if (compared && areSame) {
+        removeLatestCapturedImagesFromGalleries(); //NOT from background galleries
+    }
+}
+
+
+const removeLatestCapturedImagesFromGalleriesIfSameAsBackground = () => {
+    const [compared, areSame] = isMostRecentSnappedImageSameAsMostRecentBackgroundImage();
+    if (compared && areSame) {
+        removeLatestCapturedImagesFromGalleries(); //NOT from background galleries
+    }
+}
+
+const removeLatestCapturedImagesFromGalleries = () => { //NOT from background galleries
+    imageDataGallery1.length = imageDataGallery1.length-1 > 0? imageDataGallery1.length - 1 : imageDataGallery1.length;
+    imageForDispOnlyGallery1.length = imageForDispOnlyGallery1.length-1 > 0? imageForDispOnlyGallery1.length -1 : imageForDispOnlyGallery1.length;
+    imageDataGallery2.length = imageDataGallery2.length-1 > 0? imageDataGallery2.length - 1 : imageDataGallery2.length;
+    imageForDispOnlyGallery2.length = imageForDispOnlyGallery2.length-1 > 0? imageForDispOnlyGallery2.length -1 : imageForDispOnlyGallery2.length;
+    imageDataGallery3.length = imageDataGallery3.length-1 > 0? imageDataGallery3.length - 1 : imageDataGallery3.length;
+    imageForDispOnlyGallery3.length = imageForDispOnlyGallery3.length-1 > 0? imageForDispOnlyGallery3.length -1 : imageForDispOnlyGallery3.length;
+    imageGalleryCurrentIndex = 0;
 }
 
 const showMixedImagesSelfDifferences = (typeOfDiff) => {
