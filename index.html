@@ -29,21 +29,28 @@
         </div>
 
         <div class="container container-fluid">
-            <div class="panel panel-default">
+            <div id="photoCapturePanel" class="panel panel-default">
                 <div class="panel-heading">
                     <strong>CAPTURE</strong>
                     <button class="btn btn-default" id="showHideSnapAllPhotos" onclick="doShowHideSnapAllPhotos(this)">Show</button>
                     Width:<input name="photoWidth" id="photoWidth" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoWidth(this)" />
                     Height:<input name="photoHeight" id="photoHeight" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoHeight(this)" />
                     <button class="btn btn-default" id="snapAllPhotos" onclick="doSnapAllPhotos()">Snap Photo</button>
+                    <!--
                     <button class="btn btn-default" id="snapAllPhotosContinuous" onclick="doSnapAllPhotosContinuous()">Continuous</button>
                     <button class="btn btn-default" id="snapAllPhotosContinuousSaveMovment" onclick="doSnapAllPhotosContinuousSaveMovement()">Cont Save Movement</button>
+                    -->
+                    <button class="btn btn-default" id="snapAllPhotosContinuousSaveMovment" onclick="doSnapAllPhotosContinuousSaveMovement()">Continuous</button>
                     <button class="btn btn-default" id="stopSnapAllPhotosContinuous" onclick="doStopSnapAllPhotosContinuous()">Stop</button>
-                    DispWidth:<input name="photoDispWidth" id="photoDispWidth" type="text" size="3" maxlength="3" value="200" onchange="doChangeDispPhotoWidth(this)" />
-                    DispHeight:</label> <input name="photoDispHeight" id="photoDispHeight" type="text" size="3" maxlength="3" value="100" onchange="doChangeDispPhotoHeight(this)" />
+                    DispWidth:<input name="photoDispWidth" id="photoDispWidth" type="text" size="3" maxlength="3" value="600" onchange="doChangeDispPhotoWidth(this)" />
+                    DispHeight:</label> <input name="photoDispHeight" id="photoDispHeight" type="text" size="3" maxlength="3" value="300" onchange="doChangeDispPhotoHeight(this)" />
                     <button class="btn btn-default" id="snapBackgroundAll" onclick="doSnapBackgroundAll(this)">Snap Background</button>
-                    <input id="acceptableDifference" type="range" min="0" max="10000" value="20000" class="slider"/>
-                    Diff Threshold:<span id="acceptableDifferenceValue">0</span>
+                <!--
+                    <input id="acceptableImageToBackgroundDifference" type="range" min="0" max="100" value="10" class="slider" oninput="doAcceptableImageToBackgroundDifferenceValue(this)"/>
+                    Img to Bkgd Diff Threshold:<span id="acceptableImageToBackgroundDifferenceValue">0</span>
+                -->
+                    <input id="acceptableImageToImageDifference" type="range" min="0" max="100" value="22" class="slider" oninput="doAcceptableImageToImageDifferenceValue(this)"/>
+                    Img to Img Diff Threshold:<span id="acceptableImageToImageDifferenceValue">0</span>
                 </div>
                 <div style="display:none" id="snapAllPhotosArea" class="panel-body">
                     <div class="row">
@@ -84,7 +91,7 @@
         </div>
 
         <div class="container container-fluid">
-            <div class="panel panel-default">
+            <div id="galleryPanel" class="panel panel-default">
                 <div class="panel-heading">
                     <strong>GALLERIES</strong>
                     <button class="btn btn-default" id="showHideGallery" onclick="doShowHideGallery(this)">Show</button>
@@ -121,8 +128,8 @@
                     <button class="btn btn-default" id="showHideSelfColorDifference" onclick="doShowHideMixedImagesSelfColorDifferences(this)">Color</button>
                     <span id="colorMode">Normal Diff</span>
                     <p>
-                    Contrast:<input id="contrast" type="range" min="0" max="255" value="183" class="slider" />
-                    Diff Threshold:<input id="diffThreshold" type="range" min="0" max="255" value="183" class="slider" />
+                    Contrast:<span id="contrastValue">0</span><input id="contrast" type="range" min="0" max="255" value="26" class="slider" oninput="doContrastValue(this)" />
+                    Diff Threshold:<span id="diffThresholdValue">0</span><input id="diffThreshold" type="range" min="0" max="255" value="200" class="slider" oninput="doDiffThresholdValue(this)"/>
                     Left|Right Align:<input id="leftRightAlign" type="range" min="-800" max="800" value="0" class="slider" oninput="doLeftRightAlign(this)"/>
                 </div>
                 <div style="display:none" id="backgroundsPlusGalleriesArea" class="panel-body">

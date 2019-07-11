@@ -14,11 +14,61 @@ const rightCanvasPos = {x:0, y:0}
 
 let typeOfDiff = 'mono';
 
+const photoCapturePanelFlashNumber = [0];
+const galleryPanelFlashNumber = [0];
+
+let prevNumImages = 0;
+
 /******************************************************************************************************
 *******************************************************************************************************
 * function definitions
 *******************************************************************************************************
 ******************************************************************************************************/
+const flashPanel = (whichPanel, whichFlashNumber) => {
+    switch (whichFlashNumber[0]) {
+        case 0:
+            whichPanel.className = 'panel panel-primary';
+            whichFlashNumber[0]++;
+            break;
+        case 1:
+            whichPanel.className = 'panel panel-info';
+            whichFlashNumber[0]++;
+            break;
+            /*
+        case 2:
+            whichPanel.className = 'panel panel-success';
+            photoCapturePanelFlashNumber++;
+            break;
+        case 3:
+            whichPanel.className = 'panel panel-warning';
+            photoCapturePanelFlashNumber++;
+            break;
+        case 4:
+            whichPanel.className = 'panel panel-danger';
+            photoCapturePanelFlashNumber++;
+            break;
+            */
+        default:
+            whichFlashNumber[0] = 0;
+    }
+}
+
+const doAcceptableImageToBackgroundDifferenceValue = (slider) => {
+    acceptableImageToBackgroundDifferenceValue.innerHTML = slider.value;
+}
+
+const doAcceptableImageToImageDifferenceValue = (slider) => {
+    acceptableImageToImageDifferenceValue.innerHTML = slider.value;
+}
+
+const doContrastValue = (slider) => {
+    contrastValue.innerHTML = contrast.value;
+}
+
+const doDiffThresholdValue = (slider) => {
+    diffThresholdValue.innerHTML = diffThreshold.value;
+}
+
 const doChangePlayerWidth = (input) => {
     if (input.value !== undefined && input.value != '') {
         showMessages('warning','All Camera Feeds Stopping..');
@@ -236,10 +286,18 @@ const doSnapAllPhotos = (snapParams) => {
 
         snapAllPhotos(categories === undefined ? {'none':'none'} : categories);
 
+        //flashPanel(photoCapturePanel, photoCapturePanelFlashNumber);
+
         removeLatestCapturedImagesFromGalleriesIfSameAsPrevious();
 
-        if (removeCapturedImagesIfSame !== undefined && removeCapturedImagesIfSame === true) {
-            removeLatestCapturedImagesFromGalleriesIfSameAsBackground();
+        //if (removeCapturedImagesIfSame !== undefined && removeCapturedImagesIfSame === true) {
+        //    removeLatestCapturedImagesFromGalleriesIfSameAsBackground();
+        //}
+
+        let numImages = parseInt(numberOfImages.innerHTML);
+        if (prevNumImages < numImages) {
+            flashPanel(galleryPanel, galleryPanelFlashNumber);
+            prevNumImages = numImages;
         }
 
     } catch (error) {
@@ -250,7 +308,7 @@ const doSnapAllPhotos = (snapParams) => {
     if (snapAllPhotosContinuous) {
         setTimeout(() => { 
             doSnapAllPhotos(snapParams);
-        }, 500);
+        }, 250);
     }
 
 }
@@ -458,3 +516,7 @@ photoDispHeight = document.getElementById('photoDispHeight').value;
 hideAllPlayers();
 generatedCategoryButtonsForSnapShot.innerHTML = generateCategoryButtons();
 generatedCategoryButtonsForGalleryImage.innerHTML = generateCategoryButtons();
+//acceptableImageToBackgroundDifferenceValue.innerHTML = acceptableImageToBackgroundDifference.value;
+acceptableImageToImageDifferenceValue.innerHTML = acceptableImageToImageDifference.value;
+contrastValue.innerHTML = contrast.value;
+diffThresholdValue.innerHTML = diffThreshold.value;

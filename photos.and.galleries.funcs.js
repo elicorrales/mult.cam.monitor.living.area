@@ -83,21 +83,27 @@ const areTheTwoMostRecentSnappedImageSame = () => {
         let len1 = imageForDispOnlyGallery1.length;
         if (len1 > 1) {
             comparedImages = true;
-            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery1[len1-1], imageForDispOnlyGallery1[len1-2], parseInt(acceptableDifference.value));
+            imagesFrom1Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery1[len1-1], imageForDispOnlyGallery1[len1-2],
+                parseInt(acceptableImageToImageDifference.value));
         } 
     } 
     if (player2.srcObject !== null) {
         let len1 = imageForDispOnlyGallery2.length;
         if (len1 > 1) {
             comparedImages = true;
-            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery2[len1-1], imageForDispOnlyGallery2[len1-2], parseInt(acceptableDifference.value));
+            imagesFrom1Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery2[len1-1], imageForDispOnlyGallery2[len1-2],
+                parseInt(acceptableImageToImageDifference.value));
         }
     }
     if (player3.srcObject !== null) {
         let len1 = imageForDispOnlyGallery3.length;
         if (len1 > 1) {
             comparedImages = true;
-            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery3[len1-1], imageForDispOnlyGallery3[len1-2], parseInt(acceptableDifference.value));
+            imagesFrom1Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery3[len1-1], imageForDispOnlyGallery3[len1-2],
+                parseInt(acceptableImageToImageDifference.value));
         }
     }
 
@@ -120,7 +126,9 @@ const isMostRecentSnappedImageSameAsMostRecentBackgroundImage = () => {
         let len2 = hiResBackgroundGallery1.length;
         if (len1 > 0 && len2 > 0) {
             comparedImages = true;
-            imagesFrom1Same = areTwoImagesTheSame( imageForDispOnlyGallery1[len1-1], hiResBackgroundGallery1[len2-1], parseInt(acceptableDifference.value));
+            imagesFrom1Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery1[len1-1], hiResBackgroundGallery1[len2-1],
+                parseInt(acceptableImageToBackgroundDifference.value));
         } 
     } 
     if (player2.srcObject !== null) {
@@ -128,7 +136,9 @@ const isMostRecentSnappedImageSameAsMostRecentBackgroundImage = () => {
         let len2 = hiResBackgroundGallery2.length;
         if (len1 > 0 && len2 > 0) {
             comparedImages = true;
-            imagesFrom2Same = areTwoImagesTheSame(imageForDispOnlyGallery2[len1-1], hiResBackgroundGallery2[len2-1], parseInt(acceptableDifference.value));
+            imagesFrom2Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery2[len1-1], hiResBackgroundGallery2[len2-1],
+                parseInt(acceptableImageToBackgroundDifference.value));
         }
     }
     if (player3.srcObject !== null) {
@@ -136,7 +146,9 @@ const isMostRecentSnappedImageSameAsMostRecentBackgroundImage = () => {
         let len2 = hiResBackgroundGallery3.length;
         if (len1 > 0 && len2 > 0) {
             comparedImages = true;
-            imagesFrom3Same = areTwoImagesTheSame(imageForDispOnlyGallery3[len1-1], hiResBackgroundGallery3[len2-1], parseInt(acceptableDifference.value));
+            imagesFrom3Same = areTwoImagesTheSame(
+                imageForDispOnlyGallery3[len1-1], hiResBackgroundGallery3[len2-1],
+                parseInt(acceptableImageToBackgroundDifference.value));
         }
     }
 

@@ -214,7 +214,8 @@ const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {
         totalDifference += Math.abs(data1[i+1] - data2[i+1]);
         totalDifference += Math.abs(data1[i+2] - data2[i+2]);
     }
-    return totalDifference / 100;
+    let diffVolume = data1.length / 10;
+    return totalDifference / diffVolume;
 }
 
 //const areTwoImagesTheSame = (canvas1, canvas2, acceptableDifference) => {
