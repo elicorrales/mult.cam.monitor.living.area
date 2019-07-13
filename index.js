@@ -222,11 +222,6 @@ const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
     let gridSquares = parms.gridSquares;
     if (gridSquares < 2) { return;}
 
-    if (parms.bkgdValue === undefined) { 
-        throw 'highlightSelfDifference: missing param : bkgdValue';
-    }
-    let bkgdValue = parms.bkgdValue;
-
     if (parms.bgDiffValue === undefined) { 
         throw 'highlightSelfDifference: missing param : bgDiffValue';
     }
@@ -253,7 +248,7 @@ const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
     for (let row=0; row<height; row+=vRes) {
         for (let col=0; col<width; col+=hRes) {
             let data = ctx.getImageData(col, row, hRes, vRes).data;
-            let totalDifference = getTotalNonBackgroundValueInImage(data, bkgdValue);
+            let totalDifference = getTotalNonBackgroundValueInImage(data);
             if (totalDifference > bgDiffValue) {
                 //ctxGrid.clearRect(0, 0, width, height);
                 //ctxGrid.fillStyle = 'white';
@@ -296,13 +291,16 @@ const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {
     return totalDifference / diffVolume;
 }
 
-const getTotalNonBackgroundValueInImage = (data, diffValue) => {
+const getTotalNonBackgroundValueInImage = (data) => {
     //const data = image.data;
     let totalDifference = 0;
     for (let i=0; i<data.length; i+=4) {
-        totalDifference += Math.abs(data[i] - diffValue);
-        totalDifference += Math.abs(data[i+1] - diffValue);
-        totalDifference += Math.abs(data[i+2] - diffValue);
+        //totalDifference += Math.abs(data[i] - diffValue);
+        //totalDifference += Math.abs(data[i+1] - diffValue);
+        //totalDifference += Math.abs(data[i+2] - diffValue);
+        totalDifference += 255 - data[i];
+        totalDifference += 255 - data[i+1];
+        totalDifference += 255 - data[i+2];
     }
     let diffVolume = data.length;
     return totalDifference / diffVolume;

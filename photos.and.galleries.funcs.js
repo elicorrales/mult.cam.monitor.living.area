@@ -198,24 +198,21 @@ const showMixedImagesSelfDifferences = (typeOfDiff) => {
         modifyImageOnCanvas(
             backgroundsPlusGalleriesDispCanvas1,
             {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value),
-                typeOfDiff, gridSquares:parseInt(gridSquares.value),
-                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                typeOfDiff, gridSquares:parseInt(gridSquares.value), bgDiffValue:parseInt(bgDiff.value)},
                 gridDispCanvas1
         );
     }
     if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2,
             {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value), 
-                typeOfDiff, gridSquares:parseInt(gridSquares.value),
-                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                typeOfDiff, gridSquares:parseInt(gridSquares.value), bgDiffValue:parseInt(bgDiff.value)},
                 gridDispCanvas2
         );
     }
     if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, 
              {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value),  
-                typeOfDiff, gridSquares:parseInt(gridSquares.value),
-                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                typeOfDiff, gridSquares:parseInt(gridSquares.value), bgDiffValue:parseInt(bgDiff.value)},
                 gridDispCanvas3
         );
     }

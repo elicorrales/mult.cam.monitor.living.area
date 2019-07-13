@@ -12,7 +12,7 @@ let photoDispHeight = 0;
 
 const rightCanvasPos = {x:0, y:0}
 
-let typeOfDiff = 'mono';
+let typeOfDiff = 'normal';
 
 const photoCapturePanelFlashNumber = [0];
 const galleryPanelFlashNumber = [0];
@@ -53,36 +53,46 @@ const flashPanel = (whichPanel, whichFlashNumber) => {
     }
 }
 
-const doAcceptableImageToBackgroundDifferenceValue = (slider) => {
-    acceptableImageToBackgroundDifferenceValue.innerHTML = slider.value;
-}
-
-const doAcceptableImageToImageDifferenceValue = (slider) => {
-    acceptableImageToImageDifferenceValue.innerHTML = slider.value;
-}
-
 const doNormalDiffThresholdValue = (slider) => {
-   normalDiffThresholdValue.innerHTML = slider.value;
+    normalDiffThresholdValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
-
 const doContrastValue = (slider) => {
     contrastValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
-
 const doDiffThresholdValue = (slider) => {
     diffThresholdValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
+const doAcceptableImageToImageDifferenceValue = (slider) => {
+    acceptableImageToImageDifferenceValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
+}
+
 
 const doGridSquaresValue = (slider) => {
     gridSquaresValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
 
+/*
 const doBkgdValue = (slider) => {
     bkgdValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
+*/
 
 const doBgDiffValue = (slider) => {
     bgDiffValue.innerHTML = slider.value;
+    mixCurrentGalleryAndBackgroundImages();
+    showMixedImagesSelfDifferences(typeOfDiff);
 }
 
 /*
@@ -415,6 +425,8 @@ const doShowNextPrevImageFromBackgrounds = (button) => {
         } else {
             showNextImageFromBackgrounds();
         }
+        showMixedImagesSelfDifferences(typeOfDiff);
+        /*
         if (showHideSelfMonoDifference.innerHTML === 'Reset' &&
             showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
             showMixedImagesSelfDifferences(typeOfDiff);
@@ -425,6 +437,7 @@ const doShowNextPrevImageFromBackgrounds = (button) => {
             showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
             showMixedImagesSelfDifferences(typeOfDiff);
         }
+        */
     } catch (error) {
         showMessages('danger',error);
         console.log(error);
@@ -447,7 +460,7 @@ const doShowHideBackgroundsPlusGalleries = (button) => {
 const doShowHideMixedImagesSelfNormalDifferences = (button) => {
     if (button.innerHTML === 'Normal') {
         colorMode.innerHTML = 'Normal - (Diff)';
-        button.innerHTML = 'Reset';
+        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfColorDifference.innerHTML = 'Color';
         showHideSelfColorDifference.className = 'btn btn-default';
@@ -458,11 +471,14 @@ const doShowHideMixedImagesSelfNormalDifferences = (button) => {
         typeOfDiff = 'normal';
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
-    } else {
+    }
+    /*
+     else {
         button.innerHTML = 'Normal';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
+    */
 }
 
 
@@ -479,17 +495,20 @@ const doShowHideMixedImagesSelfColorDifferences = (button) => {
         typeOfDiff = 'color';
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
-    } else {
+    }
+    /*
+    else {
         button.innerHTML = 'Color';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
+    */
 }
 
 const doShowHideMixedImagesSelfMonoDifferences = (button) => {
     if (button.innerHTML === 'Monochrome') {
         colorMode.innerHTML = 'Monochrome - (Contrast)';
-        button.innerHTML = 'Reset';
+        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfNormalDifference.innerHTML = 'Normal';
         showHideSelfNormalDifference.className = 'btn btn-default';
@@ -500,17 +519,20 @@ const doShowHideMixedImagesSelfMonoDifferences = (button) => {
         typeOfDiff = 'mono';
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
-    } else {
+    }
+    /*
+     else {
         button.innerHTML = 'Monochrome';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
+    */
 }
 
 const doShowHideMixedImagesSelfSolidDifferences = (button) => {
     if (button.innerHTML === 'Solid') {
         colorMode.innerHTML = 'Solid - (Threshold)';
-        button.innerHTML = 'Reset';
+        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfNormalDifference.innerHTML = 'Normal';
         showHideSelfNormalDifference.className = 'btn btn-default';
@@ -521,11 +543,14 @@ const doShowHideMixedImagesSelfSolidDifferences = (button) => {
         typeOfDiff = 'solid';
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
-    } else {
+    }
+    /*
+     else {
         button.innerHTML = 'Solid';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
+    */
 }
 
 
@@ -588,5 +613,5 @@ normalDiffThresholdValue.innerHTML = normalDiffThreshold.value;
 contrastValue.innerHTML = contrast.value;
 diffThresholdValue.innerHTML = diffThreshold.value;
 gridSquaresValue.innerHTML = gridSquares.value;
-bkgdValue.innerHTML = bkgd.value;
+//bkgdValue.innerHTML = bkgd.value;
 bgDiffValue.innerHTML = bgDiff.value;
