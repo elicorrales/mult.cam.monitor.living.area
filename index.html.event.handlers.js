@@ -61,13 +61,35 @@ const doAcceptableImageToImageDifferenceValue = (slider) => {
     acceptableImageToImageDifferenceValue.innerHTML = slider.value;
 }
 
+const doNormalDiffThresholdValue = (slider) => {
+   normalDiffThresholdValue.innerHTML = slider.value;
+}
+
 const doContrastValue = (slider) => {
-    contrastValue.innerHTML = contrast.value;
+    contrastValue.innerHTML = slider.value;
 }
 
 const doDiffThresholdValue = (slider) => {
-    diffThresholdValue.innerHTML = diffThreshold.value;
+    diffThresholdValue.innerHTML = slider.value;
 }
+
+const doGridSquaresValue = (slider) => {
+    gridSquaresValue.innerHTML = slider.value;
+}
+
+const doBkgdValue = (slider) => {
+    bkgdValue.innerHTML = slider.value;
+}
+
+const doBgDiffValue = (slider) => {
+    bgDiffValue.innerHTML = slider.value;
+}
+
+/*
+const doClearMixedCanvas = (button) => {
+    clearMixedCanvases();
+}
+*/
 
 const doChangePlayerWidth = (input) => {
     if (input.value !== undefined && input.value != '') {
@@ -230,28 +252,32 @@ const doPlayPauseAllPlayers = (button) => {
 const doChangePhotoWidth = (input) => {
     if (input.value !== undefined && input.value != '') {
         photoWidth = document.getElementById('photoWidth').value;
-        photoHeight = document.getElementById('photoHeight').value;
+        //photoHeight = document.getElementById('photoHeight').value;
+        photoHeight = photoWidth/2;
     }
 }
 
 const doChangePhotoHeight = (input) => {
     if (input.value !== undefined && input.value != '') {
-        photoWidth = document.getElementById('photoWidth').value;
+        //photoWidth = document.getElementById('photoWidth').value;
         photoHeight = document.getElementById('photoHeight').value;
+        photoWidth = photoHeight*2;
     }
 }
 
 const doChangeDispPhotoWidth = (input) => {
     if (input.value !== undefined && input.value != '') {
         photoDispWidth = document.getElementById('photoDispWidth').value;
-        photoDispHeight = document.getElementById('photoDispHeight').value;
+        //photoDispHeight = document.getElementById('photoDispHeight').value;
+        photoDispHeight = photoDispWidth/2;
     }
 }
 
 const doChangeDispPhotoHeight = (input) => {
     if (input.value !== undefined && input.value != '') {
-        photoDispWidth = document.getElementById('photoDispWidth').value;
         photoDispHeight = document.getElementById('photoDispHeight').value;
+        //photoDispWidth = document.getElementById('photoDispWidth').value;
+        photoDispWidth = photoDispHeight*2;
     }
 }
 
@@ -363,6 +389,8 @@ const doShowNextPrevImageFromGallery = (button) => {
         } else {
             showNextImageFromGallery();
         }
+        showMixedImagesSelfDifferences(typeOfDiff);
+        /*
         if (showHideSelfMonoDifference.innerHTML === 'Reset' &&
             showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
             showMixedImagesSelfDifferences(typeOfDiff);
@@ -373,6 +401,7 @@ const doShowNextPrevImageFromGallery = (button) => {
             showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
             showMixedImagesSelfDifferences(typeOfDiff);
         }
+        */
     } catch (error) {
         showMessages('danger',error);
         console.log(error);
@@ -414,35 +443,65 @@ const doShowHideBackgroundsPlusGalleries = (button) => {
     }
 }
 
-const doShowHideMixedImagesSelfMonoDifferences = (button) => {
-    if (button.innerHTML === 'Monochrome') {
-        colorMode.innerHTML = 'Monochrome - (Contrast)';
+
+const doShowHideMixedImagesSelfNormalDifferences = (button) => {
+    if (button.innerHTML === 'Normal') {
+        colorMode.innerHTML = 'Normal - (Diff)';
         button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfColorDifference.innerHTML = 'Color';
-        showHideSelfSolidDifference.innerHTML = 'Solid';
         showHideSelfColorDifference.className = 'btn btn-default';
-        typeOfDiff = 'mono';
+        showHideSelfMonoDifference.innerHTML = 'Monochrome';
+        showHideSelfMonoDifference.className = 'btn btn-default';
+        showHideSelfSolidDifference.innerHTML = 'Solid';
+        showHideSelfSolidDifference.className = 'btn btn-default';
+        typeOfDiff = 'normal';
+        mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     } else {
-        button.innerHTML = 'Monochrome';
+        button.innerHTML = 'Normal';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
 }
 
+
 const doShowHideMixedImagesSelfColorDifferences = (button) => {
     if (button.innerHTML === 'Color') {
         colorMode.innerHTML = 'Color - (Contrast)';
-        button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
+        showHideSelfNormalDifference.innerHTML = 'Normal';
+        showHideSelfNormalDifference.className = 'btn btn-default';
         showHideSelfMonoDifference.innerHTML = 'Monochrome';
-        showHideSelfSolidDifference.innerHTML = 'Solid';
         showHideSelfMonoDifference.className = 'btn btn-default';
+        showHideSelfSolidDifference.innerHTML = 'Solid';
+        showHideSelfSolidDifference.className = 'btn btn-default';
         typeOfDiff = 'color';
+        mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     } else {
         button.innerHTML = 'Color';
+        button.className = 'btn btn-default';
+        mixCurrentGalleryAndBackgroundImages();
+    }
+}
+
+const doShowHideMixedImagesSelfMonoDifferences = (button) => {
+    if (button.innerHTML === 'Monochrome') {
+        colorMode.innerHTML = 'Monochrome - (Contrast)';
+        button.innerHTML = 'Reset';
+        button.className = 'btn btn-primary';
+        showHideSelfNormalDifference.innerHTML = 'Normal';
+        showHideSelfNormalDifference.className = 'btn btn-default';
+        showHideSelfColorDifference.innerHTML = 'Color';
+        showHideSelfColorDifference.className = 'btn btn-default';
+        showHideSelfSolidDifference.innerHTML = 'Solid';
+        showHideSelfSolidDifference.className = 'btn btn-default';
+        typeOfDiff = 'mono';
+        mixCurrentGalleryAndBackgroundImages();
+        showMixedImagesSelfDifferences(typeOfDiff);
+    } else {
+        button.innerHTML = 'Monochrome';
         button.className = 'btn btn-default';
         mixCurrentGalleryAndBackgroundImages();
     }
@@ -453,10 +512,14 @@ const doShowHideMixedImagesSelfSolidDifferences = (button) => {
         colorMode.innerHTML = 'Solid - (Threshold)';
         button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
-        showHideSelfMonoDifference.innerHTML = 'Monochrome';
+        showHideSelfNormalDifference.innerHTML = 'Normal';
+        showHideSelfNormalDifference.className = 'btn btn-default';
         showHideSelfColorDifference.innerHTML = 'Color';
+        showHideSelfColorDifference.className = 'btn btn-default';
+        showHideSelfMonoDifference.innerHTML = 'Monochrome';
         showHideSelfMonoDifference.className = 'btn btn-default';
         typeOfDiff = 'solid';
+        mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     } else {
         button.innerHTML = 'Solid';
@@ -509,14 +572,21 @@ const doLeftRightAlign = (slider) => {
  *****************************************************************************************************/
 playerWidth = document.getElementById('playerWidth').value;
 playerHeight = document.getElementById('playerHeight').value;
+//playerHeight = playerWidth/2;
 photoWidth = document.getElementById('photoWidth').value;
-photoHeight = document.getElementById('photoHeight').value;
+//photoHeight = document.getElementById('photoHeight').value;
+photoHeight = photoWidth/2;
 photoDispWidth = document.getElementById('photoDispWidth').value;
 photoDispHeight = document.getElementById('photoDispHeight').value;
+photoDispHeight = photoDispWidth/2;
 hideAllPlayers();
 generatedCategoryButtonsForSnapShot.innerHTML = generateCategoryButtons();
 generatedCategoryButtonsForGalleryImage.innerHTML = generateCategoryButtons();
 //acceptableImageToBackgroundDifferenceValue.innerHTML = acceptableImageToBackgroundDifference.value;
 acceptableImageToImageDifferenceValue.innerHTML = acceptableImageToImageDifference.value;
+normalDiffThresholdValue.innerHTML = normalDiffThreshold.value;
 contrastValue.innerHTML = contrast.value;
 diffThresholdValue.innerHTML = diffThreshold.value;
+gridSquaresValue.innerHTML = gridSquares.value;
+bkgdValue.innerHTML = bkgd.value;
+bgDiffValue.innerHTML = bgDiff.value;

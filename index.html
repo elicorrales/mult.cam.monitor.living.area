@@ -12,7 +12,7 @@
                 <div class="panel-heading">
                     <strong>LIVE</strong>
                     <button class="btn btn-default" id="showHideAllPlayers" onclick="doShowHideAllPlayers(this)">Show</button>
-                    Width:<input name="playerWidth" id="playerWidth" type="text" size="3" maxlength="3" value="700" onchange="doChangePlayerWidth(this)" />
+                    Width:<input name="playerWidth" id="playerWidth" type="text" size="3" maxlength="3" value="600" onchange="doChangePlayerWidth(this)" />
                     Height:<input name="playerHeight" id="playerHeight" type="text" size="3" maxlength="3" value="400" onchange="doChangePlayerHeight(this)" />
                     <button class="btn btn-default" id="stopPlayer1" onclick="doStopCamera(this)">Stop 1</button>
                     <button class="btn btn-default" id="stopPlayer2" onclick="doStopCamera(this)">Stop 2</button>
@@ -33,7 +33,7 @@
                 <div class="panel-heading">
                     <strong>CAPTURE</strong>
                     <button class="btn btn-default" id="showHideSnapAllPhotos" onclick="doShowHideSnapAllPhotos(this)">Show</button>
-                    Width:<input name="photoWidth" id="photoWidth" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoWidth(this)" />
+                    Width:<input name="photoWidth" id="photoWidth" type="text" size="3" maxlength="3" value="100" onchange="doChangePhotoWidth(this)" />
                     Height:<input name="photoHeight" id="photoHeight" type="text" size="3" maxlength="3" value="50" onchange="doChangePhotoHeight(this)" />
                     <button class="btn btn-default" id="snapAllPhotos" onclick="doSnapAllPhotos()">Snap Photo</button>
                     <!--
@@ -49,7 +49,7 @@
                     <input id="acceptableImageToBackgroundDifference" type="range" min="0" max="100" value="10" class="slider" oninput="doAcceptableImageToBackgroundDifferenceValue(this)"/>
                     Img to Bkgd Diff Threshold:<span id="acceptableImageToBackgroundDifferenceValue">0</span>
                 -->
-                    <input id="acceptableImageToImageDifference" type="range" min="0" max="100" value="22" class="slider" oninput="doAcceptableImageToImageDifferenceValue(this)"/>
+                    <input id="acceptableImageToImageDifference" type="range" min="0" max="100" value="23" class="slider" oninput="doAcceptableImageToImageDifferenceValue(this)"/>
                     Img to Img Diff Threshold:<span id="acceptableImageToImageDifferenceValue">0</span>
                 </div>
                 <div style="display:none" id="snapAllPhotosArea" class="panel-body">
@@ -121,21 +121,38 @@
         <div class="container container-fluid">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <strong>MIXED</strong>
+                    <strong>MIXED</strong><p>
+                    Diff Threshold (Normal Diff mode):&nbsp;<span id="normalDiffThresholdValue">0</span>
+                    <input id="normalDiffThreshold" type="range" min="0" max="255" value="255" class="slider" oninput="doNormalDiffThresholdValue(this)" />
                     <button class="btn btn-default" id="showHideBackgroundsPlusGalleries" onclick="doShowHideBackgroundsPlusGalleries(this)">Show</button>
-                    <button class="btn btn-default" id="showHideSelfSolidDifference" onclick="doShowHideMixedImagesSelfSolidDifferences(this)">Solid</button>
-                    <button class="btn btn-default" id="showHideSelfMonoDifference" onclick="doShowHideMixedImagesSelfMonoDifferences(this)">Monochrome</button>
+                    <button class="btn btn-default" id="showHideSelfNormalDifference" onclick="doShowHideMixedImagesSelfNormalDifferences(this)">Normal</button>
                     <button class="btn btn-default" id="showHideSelfColorDifference" onclick="doShowHideMixedImagesSelfColorDifferences(this)">Color</button>
-                    <span id="colorMode">Normal Diff</span>
+                    <button class="btn btn-default" id="showHideSelfMonoDifference" onclick="doShowHideMixedImagesSelfMonoDifferences(this)">Monochrome</button>
+                    <button class="btn btn-default" id="showHideSelfSolidDifference" onclick="doShowHideMixedImagesSelfSolidDifferences(this)">Solid</button>
+                    Mode Active Now:&nbsp;<strong><span id="colorMode">Normal Diff</span></strong>
+                <!--
+                    <button class="btn btn-default" id="clearMixedCanvas" onclick="doClearMixedCanvas(this)">Clear</button>
+                -->
                     <p>
-                    Contrast:<span id="contrastValue">0</span><input id="contrast" type="range" min="0" max="255" value="26" class="slider" oninput="doContrastValue(this)" />
-                    Diff Threshold:<span id="diffThresholdValue">0</span><input id="diffThreshold" type="range" min="0" max="255" value="200" class="slider" oninput="doDiffThresholdValue(this)"/>
-                    Left|Right Align:<input id="leftRightAlign" type="range" min="-800" max="800" value="0" class="slider" oninput="doLeftRightAlign(this)"/>
+                    Contrast (Color or Monochrome mode):&nbsp;<span id="contrastValue">0</span><input id="contrast" type="range" min="0" max="255" value="26" class="slider" oninput="doContrastValue(this)" />
+                    Diff Threshold (Solid mode only):&nbsp;<span id="diffThresholdValue">0</span><input id="diffThreshold" type="range" min="0" max="255" value="200" class="slider" oninput="doDiffThresholdValue(this)"/>
+                    <hr>
+                    Grid Squares:<span id="gridSquaresValue">0</span><input id="gridSquares" type="range" min="2" max="20" value="8" class="slider" oninput="doGridSquaresValue(this)"/>
+                    Background:<span id="bkgdValue">0</span><input id="bkgd" type="range" min="0" max="255" value="255" class="slider" oninput="doBkgdValue(this)"/>
+                    BgDiff:<span id="bgDiffValue">0</span><input id="bgDiff" type="range" min="0" max="1000" value="1000" class="slider" oninput="doBgDiffValue(this)"/>
                 </div>
                 <div style="display:none" id="backgroundsPlusGalleriesArea" class="panel-body">
+                    <!--
+                    <img style="display:none" id="backgroundsPlusGalleriesDispImg1" width="600" height="300"></img>
+                    <img id="backgroundsPlusGalleriesDispImg2" width="600" height="300"></img>
+                    <img id="backgroundsPlusGalleriesDispImg3" width="600" height="300"></img>
+                    -->
                     <canvas style="display:none" id="backgroundsPlusGalleriesDispCanvas1" width="600" height="300"></canvas>
+                    <canvas style="display:none" id="gridDispCanvas1" width="600" height="300"></canvas>
                     <canvas id="backgroundsPlusGalleriesDispCanvas2" width="600" height="300"></canvas>
+                    <canvas id="gridDispCanvas2" width="600" height="300"></canvas>
                     <canvas id="backgroundsPlusGalleriesDispCanvas3" width="600" height="300"></canvas>
+                    <canvas id="gridDispCanvas3" width="600" height="300"></canvas>
                 </div>
             </div>
         </div>

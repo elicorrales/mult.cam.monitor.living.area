@@ -16,6 +16,18 @@ const imageDataGallery3 = [];
 const imageForDispOnlyGallery3 = [];
 let   imageGalleryCurrentIndex = 0;
 
+//let backgroundsPlusGalleriesDispImg1 = document.getElementById('backgroundsPlusGalleriesDispImg1');
+//let backgroundsPlusGalleriesDispImg2 = document.getElementById('backgroundsPlusGalleriesDispImg2');
+//let backgroundsPlusGalleriesDispImg3 = document.getElementById('backgroundsPlusGalleriesDispImg3');
+
+/*
+const clearMixedCanvases = () => {
+    clearCanvas(backgroundsPlusGalleriesDispCanvas1);
+    clearCanvas(backgroundsPlusGalleriesDispCanvas2);
+    clearCanvas(backgroundsPlusGalleriesDispCanvas3);
+}
+*/
+
 const snapPhoto = (whichPlayer, whichPhotoCanvas, whichPhotoDispCanvas, whichImageDataGallery, whichImageForDispOnlyGallery, categories) => {
     whichPhotoCanvas.width = photoWidth; whichPhotoCanvas.height = photoHeight;
     whichPhotoDispCanvas.width = photoDispWidth; whichPhotoDispCanvas.height = photoDispHeight;
@@ -185,33 +197,45 @@ const showMixedImagesSelfDifferences = (typeOfDiff) => {
     if (player1.srcObject !== null && imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
         modifyImageOnCanvas(
             backgroundsPlusGalleriesDispCanvas1,
-            {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
+            {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value),
+                typeOfDiff, gridSquares:parseInt(gridSquares.value),
+                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                gridDispCanvas1
         );
     }
     if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas2,
-            {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
+            {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value), 
+                typeOfDiff, gridSquares:parseInt(gridSquares.value),
+                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                gridDispCanvas2
         );
     }
     if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
         modifyImageOnCanvas(backgroundsPlusGalleriesDispCanvas3, 
-             {threshold:parseInt(diffThreshold.value),contrast:parseInt(contrast.value), typeOfDiff}
+             {threshold:parseInt(diffThreshold.value), contrast:parseInt(contrast.value), normDiffThres:parseInt(normalDiffThreshold.value),  
+                typeOfDiff, gridSquares:parseInt(gridSquares.value),
+                bkgdValue:parseInt(bkgd.value), bgDiffValue:parseInt(bgDiff.value)},
+                gridDispCanvas3
         );
     }
 }
 
 const mixCurrentGalleryAndBackgroundImages = () => {
     if (player1.srcObject !== null && imageForDispOnlyGallery1.length >0 && hiResBackgroundGallery1.length > 0) {
+        //backgroundsPlusGalleriesDispImg1.src =
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery1[imageGalleryCurrentIndex].image, hiResBackgroundGallery1[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas1, createDifference);
     }
     if (player2.srcObject !== null && imageForDispOnlyGallery2.length >0 && hiResBackgroundGallery2.length > 0) {
+        //backgroundsPlusGalleriesDispImg2.src =
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery2[imageGalleryCurrentIndex].image, hiResBackgroundGallery2[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas2, createDifference);
     }
     if (player3.srcObject !== null && imageForDispOnlyGallery3.length >0 && hiResBackgroundGallery3.length > 0) {
+        //backgroundsPlusGalleriesDispImg3.src =
         mixTwoImagesOntoCanvas(
             imageForDispOnlyGallery3[imageGalleryCurrentIndex].image, hiResBackgroundGallery3[backgroundsCurrentIndex].image, 
             backgroundsPlusGalleriesDispCanvas3, createDifference);

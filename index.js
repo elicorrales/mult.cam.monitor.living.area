@@ -119,6 +119,12 @@ const createDifference = (image1, image2) => {
 }
 
 const modification = (data, parms) => {
+
+    if (parms.normDiffThres === undefined) { 
+        throw 'highlightSelfDifference: missing param : normDiffThres';
+    }
+    let normDiffThres = parms.normDiffThres;
+
     if (parms.contrast === undefined) { 
         throw 'highlightSelfDifference: missing param : contrast';
     }
@@ -137,6 +143,16 @@ const modification = (data, parms) => {
     let newData = [];
     for (let i=0; i<data.length; i+=4) {
 
+        //NORMAL DIFF MODE -----------
+        if (normDiffThres > 0 && typeOfDiff === 'normal') {
+            let min = Math.min(data[i], data[i+1], data[i+2]);
+            newData[i] = data[i] > normDiffThres ? 255 : data[i];
+            newData[i+1] = data[i+1] > normDiffThres ? 255 : data[i+1];
+            newData[i+2] = data[i+2] > normDiffThres ? 255 : data[i+2];
+        }
+
+
+        //CONTRAST MODE ------------- works on COLOR MONOCHROME modes
         if (contrast > 0 && typeOfDiff  === 'color') {
             newData[i] = data[i] > 128 ? data[i] + contrast : data[i] - contrast;
             newData[i] = newData[i] > 255? 255 : newData[i];
@@ -149,6 +165,7 @@ const modification = (data, parms) => {
             newData[i+2] = newData[i+2] < 0? 0 : newData[i+2];
         }
 
+        //MONOCHROME MODE ------------- also impacted by above CONTRAST
         if (contrast > 0 && typeOfDiff  === 'mono') {
             let min = Math.min(data[i], data[i+1], data[i+2]);
             newData[i] = data[i] > 128 ? data[i] + contrast : data[i] - contrast;
@@ -159,12 +176,12 @@ const modification = (data, parms) => {
         }
 
 
+        //SOLID MODE -- has just two levels, a color, and no color (red or white)
+        //(image or background)
         //this means we see only red or white.. no inbetween, no other colors
         //red is the diff (the image), white is the background
         if (typeOfDiff === 'solid') {
-
             let min = Math.min(data[i], data[i+1], data[i+2]);
-
             newData[i] = 255;   //leave Red at max
             if (min < threshold) {
                 newData[i+1] = 255 - threshold;
@@ -185,15 +202,76 @@ const modification = (data, parms) => {
 const mixTwoImagesOntoCanvas = (image1, image2, canvas, mixFunc) => {
     let mixedImage = mixFunc(image1, image2);
     canvas.getContext('2d').putImageData(mixedImage, 0, 0);
+    return canvas.toDataURL('image/jpeg',1.0);
 }
 
-const modifyImageOnCanvas = (canvas, parms) => {
+const stepOneDistinguishImagesFromBackground = (canvas, parms) => {
     let ctx = canvas.getContext('2d');
     let image = ctx.getImageData(0, 0, canvas.width, canvas.height);
     let data = image.data;
     let newData = modification(data, parms);
     let newImage = new ImageData(new Uint8ClampedArray(newData), image.width, image.height);
     ctx.putImageData(newImage, 0, 0);
+}
+
+
+const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
+    if (parms.gridSquares === undefined) { 
+        throw 'highlightSelfDifference: missing param : gridSquares';
+    }
+    let gridSquares = parms.gridSquares;
+    if (gridSquares < 2) { return;}
+
+    if (parms.bkgdValue === undefined) { 
+        throw 'highlightSelfDifference: missing param : bkgdValue';
+    }
+    let bkgdValue = parms.bkgdValue;
+
+    if (parms.bgDiffValue === undefined) { 
+        throw 'highlightSelfDifference: missing param : bgDiffValue';
+    }
+    let bgDiffValue = parms.bgDiffValue;
+
+    let width = canvas.width;
+    let height = canvas.height;
+    let hRes = Math.round(width/gridSquares);
+    if (width >= 2 * height) {
+        hRes = Math.round(width/(gridSquares*2));
+    }
+    let vRes = Math.round(height/gridSquares);
+
+    let ctx = canvas.getContext('2d');
+    let ctxGrid = gridCanvas.getContext('2d');
+
+
+    let numSquares = 0;
+
+    ctxGrid.clearRect(0, 0, width, height);
+    //ctxGrid.fillStyle = 'white';
+    //ctxGrid.fillRect(0, 0, width, height);
+
+    for (let row=0; row<height; row+=vRes) {
+        for (let col=0; col<width; col+=hRes) {
+            let data = ctx.getImageData(col, row, hRes, vRes).data;
+            let totalDifference = getTotalNonBackgroundValueInImage(data, bkgdValue);
+            if (totalDifference > bgDiffValue) {
+                //ctxGrid.clearRect(0, 0, width, height);
+                //ctxGrid.fillStyle = 'white';
+                //ctxGrid.fillRect(0, 0, width, height);
+                //console.log('w:',width,' h:',height,' hR:',hRes,' vR:',vRes,' c:',col,' r:',row);
+                ctxGrid.fillRect(col, row, hRes, vRes);
+                //ctxGrid.rect(col, row, hRes, vRes);
+                //ctxGrid.stroke();
+            }
+            numSquares++;
+        }
+    }
+    console.log(numSquares);
+}
+
+const modifyImageOnCanvas = (canvas, parms, gridCanvas) => {
+    stepOneDistinguishImagesFromBackground(canvas, parms);
+    stepTwoDistinguishImagesFromBackground(canvas,parms, gridCanvas);
 }
 
 const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {
@@ -218,6 +296,19 @@ const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {
     return totalDifference / diffVolume;
 }
 
+const getTotalNonBackgroundValueInImage = (data, diffValue) => {
+    //const data = image.data;
+    let totalDifference = 0;
+    for (let i=0; i<data.length; i+=4) {
+        totalDifference += Math.abs(data[i] - diffValue);
+        totalDifference += Math.abs(data[i+1] - diffValue);
+        totalDifference += Math.abs(data[i+2] - diffValue);
+    }
+    let diffVolume = data.length;
+    return totalDifference / diffVolume;
+}
+
+
 //const areTwoImagesTheSame = (canvas1, canvas2, acceptableDifference) => {
 const areTwoImagesTheSame = (image1, image2, acceptableDifference) => {
     if (image1.image.width !== image2.image.width || image1.image.height !== image2.image.height) {
@@ -226,6 +317,7 @@ const areTwoImagesTheSame = (image1, image2, acceptableDifference) => {
     let totalDifference = getTotalDifferenceValueBetweenTwoImages(image1.image, image2.image);
     return (totalDifference < acceptableDifference);
 }
+
 
 
 /******************************************************************************************************
