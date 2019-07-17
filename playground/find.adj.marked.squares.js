@@ -7,11 +7,11 @@
 
 let markedSquares = [
    //0  1  2  3  4
-    [1, 0, 1, 0, 0], // 0
-    [0, 1, 0, 0, 0], // 1
-    [1, 0, 1, 0, 1], // 2
-    [0, 0, 0, 1, 0], // 3
-    [0, 0, 0, 0, 0], // 4
+    [0, 0, 0, 0, 1], // 0
+    [0, 0, 0, 0, 0], // 1
+    [0, 0, 0, 0, 0], // 2
+    [0, 0, 0, 0, 0], // 3
+    [1, 0, 0, 0, 0], // 4
 ];
 
 let imagesFound = [];
@@ -98,29 +98,41 @@ const fillInAllZerosWithinImageFound = (data, topLeftCol, topLeftRow, botRghtCol
 }
 
 const findImageStartingAt = (data, colStart, rowStart) => {
+    let found = false;
     let topLeftRow = findNextRowContainValAfterCol(data, [1], rowStart, colStart);
     let topLeftCol = findNextColContainValAfterRow(data, [1], colStart, rowStart);
     let botRghtRow = -1;
-    if (topLeftRow>-1 && topLeftCol>-1) {
-        botRghtRow = findNextRowNotContainValAfterCol(data, [1], topLeftRow, topLeftCol);
-    }
     let botRghtCol = -1;
-    if (topLeftRow>-1 && topLeftCol>-1 && botRghtRow>-1) {
+    if (topLeftRow>-1 && topLeftCol>-1) {
+        found = true;
+        botRghtRow = findNextRowNotContainValAfterCol(data, [1], topLeftRow, topLeftCol);
         botRghtCol = findNextColNotContainValAfterRow(data, [1], topLeftCol, topLeftRow);
-    }
-    if (botRghtCol > topLeftCol) botRghtCol--;
-    if (botRghtRow > topLeftRow) botRghtRow--;
-    let found = true;
-    if (botRghtCol < 0 || botRghtRow < 0) {
-        found = false;
-    }
-    if (found && topLeftCol === botRghtCol &&
-        topLeftRow === botRghtRow &&
-        data[topLeftRow][topLeftCol] !== 1) {
-        found = false;
-    }
-    if (found) {
-        fillInAllZerosWithinImageFound(data, topLeftCol, topLeftRow, botRghtCol, botRghtRow);
+
+        //if we found only one of the bottom right axis,
+        // lets set the -1 to same as corresponding top left corner axis.
+        if (botRghtCol >-1 && botRghtRow===-1) botRghtRow = topLeftRow;
+        if (botRghtRow >-1 && botRghtCol===-1) botRghtCol = topLeftCol;
+
+        //if we found image at bottom right limit of area, the bot right corner values
+        //will incorrectly be at -1, so lets set them to top left values.
+        if (botRghtCol===-1 && topLeftCol===data[0].length-1) botRghtCol = topLeftCol;
+        if (botRghtRow===-1 && topLeftRow===data.length-1) botRghtRow = topLeftRow;
+
+        //since we looked past the image, if imag is more than 1 square, we have to
+        //shrink area identified
+        if (botRghtCol > topLeftCol) botRghtCol--;
+        if (botRghtRow > topLeftRow) botRghtRow--;
+
+        //if area is ONLY 1 square big, then it had better be a  1 (an image)
+        if (found && topLeftCol === botRghtCol &&
+            topLeftRow === botRghtRow &&
+            data[topLeftRow][topLeftCol] !== 1) {
+            found = false;
+        }
+
+        if (found) {
+            fillInAllZerosWithinImageFound(data, topLeftCol, topLeftRow, botRghtCol, botRghtRow);
+        }
     }
     return { found, 'topX': topLeftCol, 'topY': topLeftRow, 'botX': botRghtCol, 'botY': botRghtRow };
 }
