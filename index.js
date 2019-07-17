@@ -242,27 +242,21 @@ const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
     let numSquares = 0;
 
     ctxGrid.clearRect(0, 0, width, height);
-    //ctxGrid.fillStyle = 'white';
-    //ctxGrid.fillRect(0, 0, width, height);
+
+    //let markedGridSquares = [];
 
     for (let row=0; row<height; row+=vRes) {
         for (let col=0; col<width; col+=hRes) {
             let data = ctx.getImageData(col, row, hRes, vRes).data;
             let totalDifference = getTotalNonBackgroundValueInImage(data);
             if (totalDifference > bgDiffValue) {
-                //ctxGrid.clearRect(0, 0, width, height);
-                //ctxGrid.fillStyle = 'white';
-                //ctxGrid.fillRect(0, 0, width, height);
-                //console.log('w:',width,' h:',height,' hR:',hRes,' vR:',vRes,' c:',col,' r:',row);
                 ctxGrid.fillRect(col, row, hRes, vRes);
-                //ctxGrid.rect(col, row, hRes, vRes);
-                //ctxGrid.stroke();
             }
             numSquares++;
         }
     }
-    console.log(numSquares);
 }
+
 
 const modifyImageOnCanvas = (canvas, parms, gridCanvas) => {
     stepOneDistinguishImagesFromBackground(canvas, parms);
