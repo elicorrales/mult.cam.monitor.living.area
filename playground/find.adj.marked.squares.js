@@ -4,39 +4,61 @@
 //  a '0' means the background , the canvas, the area.
 //  a '2' means that part of background has been scanned
 //  and there was NOT an object (a '1').
-
+/*
 let markedSquares = [
    //0  1  2  3  4
-    [0, 0, 0, 0, 1], // 0
-    [0, 0, 0, 0, 0], // 1
-    [0, 0, 0, 0, 0], // 2
-    [0, 0, 0, 0, 0], // 3
-    [1, 0, 0, 0, 0], // 4
+    [1, 1, 0, 1, 1], // 0
+    [1, 1, 0, 1, 1], // 1
+    [0, 1, 0, 1, 0], // 2
+    [1, 1, 0, 1, 1], // 3
+    [1, 1, 0, 1, 1], // 4
 ];
 
 let imagesFound = [];
-
-/*
-let markedSquares = [
-   //                    1 1 1 1 1
-   //0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 0
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 1
-    [0,0,0,0,0,0,0,0,0,1,1,0,0,0,0], // 2
-    [0,0,0,0,0,0,0,0,0,1,1,0,0,0,0], // 3
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 4
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 5
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 6
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 7
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 8
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], // 9
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //10
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //11
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //12
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], //13
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]  //14
-];
 */
+
+const seeIfAnyImageIsActuallyMoreThanOneImage = (images, markedSquares) => {
+
+    let newImagesFound = [];
+    images.forEach(image => {
+
+        //first grab just the portion of area corresponding to the image.
+        let area = [];
+        for (let row=0; row<=image.botY; row++) {
+            area[row] = [];
+            for (let col=0; col<=image.botX; col++) {
+                if (col>=image.topX && row>=image.topY) {
+                    area[row][col] = markedSquares[row][col];
+                } else {
+                    area[row][col] = 0;
+                }
+            }
+        }
+        let img = findImageStartingAt(area, image.topX, image.topY);
+        if (img.found) {
+            newImagesFound.push(img);
+            let imgToRightOfNewImg = findImageStartingAt(area, img.botX+1, image.topY);
+            if (imgToRightOfNewImg.found) {
+                newImagesFound.push(imgToRightOfNewImg);
+            }
+            let imgBelowNewImg = findImageStartingAt(area, img.topX, image.botY+1);
+            if (imgBelowNewImg.found) {
+                newImagesFound.push(imgBelowNewImg);
+            }
+        }
+    });
+
+    return newImagesFound;
+}
+
+const isImageAlreadyFound = (images, image) => {
+
+    if (images === undefined || images === null || images.length === 0) return false;
+
+    let exists = false;
+    images.forEach(img => { if (img.key === image.key) { exists = true; return; } })
+    return exists;
+}
 
 const findAnyMissedImages = (images, data) => {
 
@@ -44,15 +66,20 @@ const findAnyMissedImages = (images, data) => {
     let numCols = data[0].length;
     for (let row = 0; row < numRows; row++) {
         for (let col = 0; col < numCols; col++) {
+
+            let isOne = false;
             //check if value at curr col,row is a 1, and already within a found image
             //if it is, then we havent missed that value.
-            let isOne = false;
-            for (let image=0; image<images.length; image++) {
-                if (data[row][col] === 1) {
+            if (data[row][col] === 1) {
+                if (images === undefined || images === null || images.length<1) {
                     isOne = true;
-                    if (col>=images[image].topX && row>=images[image].topY && col<=images[image].botX && row<=images[image].botY) {
+                } else {
+                    for (let image=0; image<images.length; image++) {
+                        isOne = true;
+                        if (col>=images[image].topX && row>=images[image].topY && col<=images[image].botX && row<=images[image].botY) {
                             isOne = false;
                             break;//return [-1, -1];
+                        }
                     }
                 }
             }
@@ -108,21 +135,20 @@ const findImageStartingAt = (data, colStart, rowStart) => {
         botRghtRow = findNextRowNotContainValAfterCol(data, [1], topLeftRow, topLeftCol);
         botRghtCol = findNextColNotContainValAfterRow(data, [1], topLeftCol, topLeftRow);
 
-        //if we found only one of the bottom right axis,
-        // lets set the -1 to same as corresponding top left corner axis.
-        if (botRghtCol >-1 && botRghtRow===-1) botRghtRow = topLeftRow;
-        if (botRghtRow >-1 && botRghtCol===-1) botRghtCol = topLeftCol;
-
-        //if we found image at bottom right limit of area, the bot right corner values
-        //will incorrectly be at -1, so lets set them to top left values.
-        if (botRghtCol===-1 && topLeftCol===data[0].length-1) botRghtCol = topLeftCol;
-        if (botRghtRow===-1 && topLeftRow===data.length-1) botRghtRow = topLeftRow;
-
         //since we looked past the image, if imag is more than 1 square, we have to
         //shrink area identified
         if (botRghtCol > topLeftCol) botRghtCol--;
         if (botRghtRow > topLeftRow) botRghtRow--;
 
+        // there are no zero rows below image
+        if (botRghtRow < 0) {
+            botRghtRow = data.length-1;
+        }
+        // there are no zero cols to right of image
+        if (botRghtCol < 0) {
+            botRghtCol = data[0].length-1;
+        }
+        
         //if area is ONLY 1 square big, then it had better be a  1 (an image)
         if (found && topLeftCol === botRghtCol &&
             topLeftRow === botRghtRow &&
@@ -134,7 +160,8 @@ const findImageStartingAt = (data, colStart, rowStart) => {
             fillInAllZerosWithinImageFound(data, topLeftCol, topLeftRow, botRghtCol, botRghtRow);
         }
     }
-    return { found, 'topX': topLeftCol, 'topY': topLeftRow, 'botX': botRghtCol, 'botY': botRghtRow };
+    let key = topLeftCol + '.' + topLeftRow + '.' + botRghtCol + '.' +botRghtRow;
+    return { found, key, 'topX': topLeftCol, 'topY': topLeftRow, 'botX': botRghtCol, 'botY': botRghtRow };
 }
 
 const isRowContain = (data, row, values, colStart) => {
@@ -233,7 +260,7 @@ const findAllImages = (markedSquares, images) => {
     let image = findImageStartingAt(markedSquares, 0, 0);
     if (image.found) {
         //console.table(image);
-        images.push(image);
+        if (!isImageAlreadyFound(images, image)) images.push(image);
     } else {
         console.log('no image found at ', 0, 0);
         //markedSquares[col][row] = 2;
@@ -254,16 +281,14 @@ const findAllImages = (markedSquares, images) => {
         let image = findImageStartingAt(markedSquares, col, row);
         if (image.found) {
             //console.table(image);
-            images.push(image);
+            if (!isImageAlreadyFound(images, image)) images.push(image);
         } else {
             console.log('no image found at ', col, row);
         }
     }
 
-    console.log(images);
-
     //find any missed images
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < markedSquares.length*markedSquares[0].length; i++) {
 
         let [col, row] = findAnyMissedImages(images, markedSquares);
         if (col < 0 || row < 0) {
@@ -274,14 +299,17 @@ const findAllImages = (markedSquares, images) => {
         let image = findImageStartingAt(markedSquares, col, row);
         if (image.found) {
             //console.table(image);
-            images.push(image);
+            if (!isImageAlreadyFound(images, image)) images.push(image);
         } else {
             console.log('no image found at ', col, row);
         }
     }
 
+    //console.table(images);
+    images = seeIfAnyImageIsActuallyMoreThanOneImage(images, markedSquares);
+    console.table(images);
 }
 
-findAllImages(markedSquares, imagesFound);
-console.table(imagesFound);
-console.table(markedSquares);
+//findAllImages(markedSquares, imagesFound);
+//console.table(imagesFound);
+//console.table(markedSquares);

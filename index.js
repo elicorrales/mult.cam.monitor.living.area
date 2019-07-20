@@ -230,9 +230,11 @@ const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
     let width = canvas.width;
     let height = canvas.height;
     let hRes = Math.round(width/gridSquares);
+    /*
     if (width >= 2 * height) {
         hRes = Math.round(width/(gridSquares*2));
     }
+    */
     let vRes = Math.round(height/gridSquares);
 
     let ctx = canvas.getContext('2d');
@@ -243,24 +245,37 @@ const stepTwoDistinguishImagesFromBackground = (canvas, parms, gridCanvas) => {
 
     ctxGrid.clearRect(0, 0, width, height);
 
-    //let markedGridSquares = [];
+    let markedGridSquares = [];
 
+    let gridSquareRow = 0;
     for (let row=0; row<height; row+=vRes) {
+        markedGridSquares[gridSquareRow] = [];
+        let gridSquareCol = 0;
         for (let col=0; col<width; col+=hRes) {
             let data = ctx.getImageData(col, row, hRes, vRes).data;
             let totalDifference = getTotalNonBackgroundValueInImage(data);
             if (totalDifference > bgDiffValue) {
                 ctxGrid.fillRect(col, row, hRes, vRes);
+                markedGridSquares[gridSquareRow][gridSquareCol] = 1;
+            } else {
+                markedGridSquares[gridSquareRow][gridSquareCol] = 0;
             }
             numSquares++;
+            gridSquareCol++;
         }
+        gridSquareRow++;
     }
+
+    return markedGridSquares;
 }
 
 
 const modifyImageOnCanvas = (canvas, parms, gridCanvas) => {
     stepOneDistinguishImagesFromBackground(canvas, parms);
-    stepTwoDistinguishImagesFromBackground(canvas,parms, gridCanvas);
+    let markedGridSquares = stepTwoDistinguishImagesFromBackground(canvas,parms, gridCanvas);
+    let imagesFound = [];
+    findAllImages(markedGridSquares, imagesFound);
+    //console.table(markedGridSquares);
 }
 
 const getTotalDifferenceValueBetweenTwoImages = (image1, image2) => {

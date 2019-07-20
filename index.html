@@ -8,7 +8,7 @@
         <div id="messages"></div>
 
         <div class="container container-fluid">
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <strong>LIVE</strong>
                     <button class="btn btn-default" id="showHideAllPlayers" onclick="doShowHideAllPlayers(this)">Show</button>
@@ -23,13 +23,13 @@
                 <div class="panel-body">
                     <video style="display:none" id="player1"></video>
                     <video id="player2"></video>
-                    <video id="player3"></video>
+                    <video style="display:none" id="player3"></video>
                 </div>
             </div>
         </div>
 
         <div class="container container-fluid">
-            <div id="photoCapturePanel" class="panel panel-default">
+            <div id="photoCapturePanel" class="panel panel-info">
                 <div class="panel-heading">
                     <strong>CAPTURE</strong>
                     <button class="btn btn-default" id="showHideSnapAllPhotos" onclick="doShowHideSnapAllPhotos(this)">Show</button>
@@ -53,13 +53,13 @@
                         Actual Size
                         <canvas style="display:none" id="photoCanvas1"></canvas>
                         <canvas id="photoCanvas2"></canvas>
-                        <canvas id="photoCanvas3"></canvas>
+                        <canvas style="display:none" id="photoCanvas3"></canvas>
                     </div>
                     <div class="row">
                         For Display Only
                         <canvas style="display:none" id="photoDispCanvas1" width="600" height="300"></canvas>
                         <canvas id="photoDispCanvas2" width="600" height="300"></canvas>
-                        <canvas id="photoDispCanvas3" width="600" height="300"></canvas>
+                        <canvas style="display:none" id="photoDispCanvas3" width="600" height="300"></canvas>
                     </div>
                     <div class="row">
                         <span id="generatedCategoryButtonsForSnapShot"></span>
@@ -69,7 +69,7 @@
         </div>
 
         <div class="container container-fluid">
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <strong>BACKGROUNDS</strong>
                     <button class="btn btn-default" id="showHideBackgrounds" onclick="doShowHideBackgrounds(this)">Show</button>
@@ -81,13 +81,13 @@
                 <div style="display:none" id="backgroundsArea" class="panel-body">
                     <canvas style="display:none" id="backgroundsDispCanvas1" width="600" height="300"></canvas>
                     <canvas id="backgroundsDispCanvas2" width="600" height="300"></canvas>
-                    <canvas id="backgroundsDispCanvas3" width="600" height="300"></canvas>
+                    <canvas style="display:none" id="backgroundsDispCanvas3" width="600" height="300"></canvas>
                 </div>
             </div>
         </div>
 
         <div class="container container-fluid">
-            <div id="galleryPanel" class="panel panel-default">
+            <div id="galleryPanel" class="panel panel-info">
                 <div class="panel-heading">
                     <strong>GALLERIES</strong>
                     <button class="btn btn-default" id="showHideGallery" onclick="doShowHideGallery(this)">Show</button>
@@ -108,14 +108,14 @@
                     </div>
                     <div>
                         <div id="categories3"></div>
-                        <canvas id="galleryDispCanvas3" width="600" height="300"></canvas>
+                        <canvas style="display:none" id="galleryDispCanvas3" width="600" height="300"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="container container-fluid">
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <strong>MIXED</strong><p>
                     Diff Threshold (Normal Diff mode):&nbsp;<span id="normalDiffThresholdValue">0</span>
@@ -133,13 +133,13 @@
                     Grid Squares:<span id="gridSquaresValue">0</span><input id="gridSquares" type="range" min="2" max="30" value="20" class="slider" oninput="doGridSquaresValue(this)"/>
                     BgDiff:<span id="bgDiffValue">0</span><input id="bgDiff" type="range" min="0" max="500" value="500" class="slider" oninput="doBgDiffValue(this)"/>
                 </div>
-                <div style="display:none" id="backgroundsPlusGalleriesArea" class="panel-body">
+                <div style="display:none; background-color:#F0F4F9" id="backgroundsPlusGalleriesArea" class="panel-body">
                     <canvas style="display:none" id="backgroundsPlusGalleriesDispCanvas1" width="600" height="300"></canvas>
                     <canvas style="display:none" id="gridDispCanvas1" width="600" height="300"></canvas>
                     <canvas id="backgroundsPlusGalleriesDispCanvas2" width="600" height="300"></canvas>
                     <canvas id="gridDispCanvas2" width="600" height="300"></canvas>
-                    <canvas id="backgroundsPlusGalleriesDispCanvas3" width="600" height="300"></canvas>
-                    <canvas id="gridDispCanvas3" width="600" height="300"></canvas>
+                    <canvas style="display:none" id="backgroundsPlusGalleriesDispCanvas3" width="600" height="300"></canvas>
+                    <canvas style="display:none" id="gridDispCanvas3" width="600" height="300"></canvas>
                 </div>
             </div>
         </div>

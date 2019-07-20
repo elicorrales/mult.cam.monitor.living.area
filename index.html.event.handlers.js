@@ -34,20 +34,6 @@ const flashPanel = (whichPanel, whichFlashNumber) => {
             whichPanel.className = 'panel panel-info';
             whichFlashNumber[0]++;
             break;
-            /*
-        case 2:
-            whichPanel.className = 'panel panel-success';
-            photoCapturePanelFlashNumber++;
-            break;
-        case 3:
-            whichPanel.className = 'panel panel-warning';
-            photoCapturePanelFlashNumber++;
-            break;
-        case 4:
-            whichPanel.className = 'panel panel-danger';
-            photoCapturePanelFlashNumber++;
-            break;
-            */
         default:
             whichFlashNumber[0] = 0;
     }
@@ -141,19 +127,19 @@ const doStartStopAllCameras = (button) => {
             playPauseAllPlayers.disabled = false;
             //photoCanvas1.style.display = 'inline';
             photoCanvas2.style.display = 'inline';
-            photoCanvas3.style.display = 'inline';
+            //photoCanvas3.style.display = 'inline';
             //photoDispCanvas1.style.display = 'inline';
             photoDispCanvas2.style.display = 'inline';
-            photoDispCanvas3.style.display = 'inline';
+            //photoDispCanvas3.style.display = 'inline';
             //galleryDispCanvas1.style.display = 'inline';
             galleryDispCanvas2.style.display = 'inline';
-            galleryDispCanvas3.style.display = 'inline';
+            //galleryDispCanvas3.style.display = 'inline';
             //backgroundsDispCanvas1.style.display = 'inline';
             backgroundsDispCanvas2.style.display = 'inline';
-            backgroundsDispCanvas3.style.display = 'inline';
+            //backgroundsDispCanvas3.style.display = 'inline';
             //backgroundsPlusGalleriesDispCanvas1.style.display = 'inline';//main laptop camera-related stuff not used in this app
             backgroundsPlusGalleriesDispCanvas2.style.display = 'inline';
-            backgroundsPlusGalleriesDispCanvas3.style.display = 'inline';
+            //backgroundsPlusGalleriesDispCanvas3.style.display = 'inline';
         } else {
             stopAllCameras();
             showMessages('info','Camera Feeds Stopping....');
@@ -400,18 +386,6 @@ const doShowNextPrevImageFromGallery = (button) => {
             showNextImageFromGallery();
         }
         showMixedImagesSelfDifferences(typeOfDiff);
-        /*
-        if (showHideSelfMonoDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        } else if (showHideSelfColorDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        } else if (showHideSelfSolidDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        }
-        */
     } catch (error) {
         showMessages('danger',error);
         console.log(error);
@@ -426,18 +400,6 @@ const doShowNextPrevImageFromBackgrounds = (button) => {
             showNextImageFromBackgrounds();
         }
         showMixedImagesSelfDifferences(typeOfDiff);
-        /*
-        if (showHideSelfMonoDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        } else if (showHideSelfColorDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        } else if (showHideSelfSolidDifference.innerHTML === 'Reset' &&
-            showHideBackgroundsPlusGalleries.innerHTML === 'Hide') { //NOT in reset and NOT hidden, but instead highlighting diff
-            showMixedImagesSelfDifferences(typeOfDiff);
-        }
-        */
     } catch (error) {
         showMessages('danger',error);
         console.log(error);
@@ -460,7 +422,6 @@ const doShowHideBackgroundsPlusGalleries = (button) => {
 const doShowHideMixedImagesSelfNormalDifferences = (button) => {
     if (button.innerHTML === 'Normal') {
         colorMode.innerHTML = 'Normal - (Diff)';
-        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfColorDifference.innerHTML = 'Color';
         showHideSelfColorDifference.className = 'btn btn-default';
@@ -472,13 +433,6 @@ const doShowHideMixedImagesSelfNormalDifferences = (button) => {
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     }
-    /*
-     else {
-        button.innerHTML = 'Normal';
-        button.className = 'btn btn-default';
-        mixCurrentGalleryAndBackgroundImages();
-    }
-    */
 }
 
 
@@ -496,19 +450,11 @@ const doShowHideMixedImagesSelfColorDifferences = (button) => {
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     }
-    /*
-    else {
-        button.innerHTML = 'Color';
-        button.className = 'btn btn-default';
-        mixCurrentGalleryAndBackgroundImages();
-    }
-    */
 }
 
 const doShowHideMixedImagesSelfMonoDifferences = (button) => {
     if (button.innerHTML === 'Monochrome') {
         colorMode.innerHTML = 'Monochrome - (Contrast)';
-        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfNormalDifference.innerHTML = 'Normal';
         showHideSelfNormalDifference.className = 'btn btn-default';
@@ -520,19 +466,11 @@ const doShowHideMixedImagesSelfMonoDifferences = (button) => {
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     }
-    /*
-     else {
-        button.innerHTML = 'Monochrome';
-        button.className = 'btn btn-default';
-        mixCurrentGalleryAndBackgroundImages();
-    }
-    */
 }
 
 const doShowHideMixedImagesSelfSolidDifferences = (button) => {
     if (button.innerHTML === 'Solid') {
         colorMode.innerHTML = 'Solid - (Threshold)';
-        //button.innerHTML = 'Reset';
         button.className = 'btn btn-primary';
         showHideSelfNormalDifference.innerHTML = 'Normal';
         showHideSelfNormalDifference.className = 'btn btn-default';
@@ -544,13 +482,6 @@ const doShowHideMixedImagesSelfSolidDifferences = (button) => {
         mixCurrentGalleryAndBackgroundImages();
         showMixedImagesSelfDifferences(typeOfDiff);
     }
-    /*
-     else {
-        button.innerHTML = 'Solid';
-        button.className = 'btn btn-default';
-        mixCurrentGalleryAndBackgroundImages();
-    }
-    */
 }
 
 
